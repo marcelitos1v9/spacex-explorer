@@ -1,0 +1,426 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid p-0">
+    <!-- Hero Section com Background Parallax -->
+    <div class="position-relative overflow-hidden" style="background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3') no-repeat center center; background-size: cover; height: 80vh;">
+        <div class="position-absolute w-100 h-100" style="background: rgba(0,0,0,0.7);"></div>
+        <div class="container position-relative h-100">
+            <div class="d-flex flex-column justify-content-center align-items-center h-100 text-white text-center">
+                
+                <h1 class="lead mb-5">Explore o universo através dos dados da SpaceX: lançamentos, foguetes e missões espaciais.</h1>
+                <div class="d-flex gap-3">
+                    <a href="{{url_for('launches')}}" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-rocket me-2"></i>Últimos Lançamentos
+                    </a>
+                    <a href="{{url_for('rockets')}}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-space-shuttle me-2"></i>Nossos Foguetes
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards de Informação -->
+    <div class="container py-5">
+        <div class="row g-4">
+            <!-- Card de Lançamentos -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <div class="display-4 mb-3 text-primary">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h3 class="card-title">Lançamentos</h3>
+                        <p class="card-text">Acompanhe todos os lançamentos da SpaceX, passados e futuros.</p>
+                        <a href="{{url_for('launches')}}" class="btn btn-outline-primary">Ver Lançamentos</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card de Foguetes -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <div class="display-4 mb-3 text-primary">
+                            <i class="fas fa-space-shuttle"></i>
+                        </div>
+                        <h3 class="card-title">Foguetes</h3>
+                        <p class="card-text">Conheça a frota de foguetes revolucionários da SpaceX.</p>
+                        <a href="{{url_for('rockets')}}" class="btn btn-outline-primary">Ver Foguetes</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card de Tripulação -->
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <div class="display-4 mb-3 text-primary">
+                            <i class="fas fa-user-astronaut"></i>
+                        </div>
+                        <h3 class="card-title">Tripulação</h3>
+                        <p class="card-text">Conheça os astronautas que fazem parte das missões SpaceX.</p>
+                        <a href="{{url_for('crew')}}" class="btn btn-outline-primary">Ver Tripulação</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seção de Estatísticas -->
+    <div class="bg-light py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h2 class="display-4 fw-bold text-primary">150+</h2>
+                    <p class="text-muted">Lançamentos Realizados</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h2 class="display-4 fw-bold text-primary">60+</h2>
+                    <p class="text-muted">Pousos Bem-sucedidos</p>
+                </div>
+                <div class="col-md-4">
+                    <h2 class="display-4 fw-bold text-primary">10+</h2>
+                    <p class="text-muted">Anos de Inovação</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seção de História -->
+    <div class="container py-5">
+        <h2 class="text-center mb-5">História da SpaceX</h2>
+        <div class="timeline">
+            {% for event in history[:4] %}
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content {% if loop.index is even %}timeline-right{% else %}timeline-left{% endif %}">
+                    <div class="timeline-card">
+                        <div class="timeline-date">
+                            {{ event.event_date_utc.split('T')[0] }}
+                        </div>
+                        <h3 class="timeline-title">{{ event.title }}</h3>
+                        <p class="timeline-details">{{ event.details }}</p>
+                        {% if event.links.article %}
+                        <a href="{{ event.links.article }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-external-link-alt me-2"></i>Ler mais
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Timeline Expandida -->
+        <div class="timeline timeline-expanded d-none">
+            {% for event in history[4:] %}
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content {% if loop.index is even %}timeline-right{% else %}timeline-left{% endif %}">
+                    <div class="timeline-card">
+                        <div class="timeline-date">
+                            {{ event.event_date_utc.split('T')[0] }}
+                        </div>
+                        <h3 class="timeline-title">{{ event.title }}</h3>
+                        <p class="timeline-details">{{ event.details }}</p>
+                        {% if event.links.article %}
+                        <a href="{{ event.links.article }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-external-link-alt me-2"></i>Ler mais
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Botão Ver Mais -->
+        <div class="text-center mt-5">
+            <button id="expandTimelineBtn" class="btn btn-outline-primary btn-lg">
+                <span class="expand-text">Ver Mais Eventos</span>
+                <span class="collapse-text d-none">Ver Menos</span>
+                <i class="fas fa-chevron-down expand-icon"></i>
+                <i class="fas fa-chevron-up collapse-icon d-none"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Adicione estes estilos no head ou em um arquivo CSS separado -->
+<style>
+    .hover-card {
+        transition: transform 0.3s ease;
+    }
+    
+    .hover-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #005288;
+        border-color: #005288;
+    }
+
+    .btn-primary:hover {
+        background-color: #003366;
+        border-color: #003366;
+    }
+
+    .text-primary {
+        color: #005288 !important;
+    }
+
+    /* Timeline Styles */
+    .timeline {
+        position: relative;
+        padding: 2rem 0;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        height: 100%;
+        width: 2px;
+        background: linear-gradient(to bottom, 
+            rgba(0, 82, 136, 0.2),
+            rgba(0, 82, 136, 0.8),
+            rgba(0, 82, 136, 0.2));
+        transform: translateX(-50%);
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 3rem;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: 50%;
+        top: 20px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #005288;
+        transform: translateX(-50%);
+        box-shadow: 0 0 0 4px rgba(0, 82, 136, 0.2);
+        z-index: 1;
+    }
+
+    .timeline-content {
+        position: relative;
+        width: 45%;
+        animation: fadeInUp 0.6s ease backwards;
+    }
+
+    .timeline-left {
+        left: 0;
+    }
+
+    .timeline-right {
+        left: 55%;
+    }
+
+    .timeline-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .timeline-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .timeline-date {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        background: linear-gradient(45deg, #005288, #0077cc);
+        color: white;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .timeline-title {
+        color: #005288;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .timeline-details {
+        color: #666;
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+
+    /* Animações para a timeline */
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .timeline-left {
+        animation: fadeInLeft 0.6s ease backwards;
+    }
+
+    .timeline-right {
+        animation: fadeInRight 0.6s ease backwards;
+    }
+
+    /* Responsividade da Timeline */
+    @media (max-width: 768px) {
+        .timeline::before {
+            left: 30px;
+        }
+        
+        .timeline-dot {
+            left: 30px;
+        }
+        
+        .timeline-content {
+            width: calc(100% - 60px);
+            left: 60px !important;
+        }
+        
+        .timeline-card {
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    /* Efeito de hover nos botões */
+    .btn-outline-primary {
+        border-color: #005288;
+        color: #005288;
+        border-radius: 20px;
+        padding: 0.4rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+        background: linear-gradient(45deg, #005288, #0077cc);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,82,136,0.2);
+    }
+
+    /* Estilos para o botão Ver Mais */
+    #expandTimelineBtn {
+        padding: 1rem 2rem;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #expandTimelineBtn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #005288, #0077cc);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
+    }
+
+    #expandTimelineBtn:hover::before {
+        opacity: 1;
+    }
+
+    #expandTimelineBtn:hover {
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 82, 136, 0.3);
+    }
+
+    /* Animação para a timeline expandida */
+    .timeline-expanded .timeline-item {
+        animation: fadeInUp 0.6s ease backwards;
+    }
+
+    .timeline-expanded .timeline-item:nth-child(even) {
+        animation-delay: 0.2s;
+    }
+
+    .timeline-expanded .timeline-item:nth-child(odd) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes rotateIcon {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(180deg);
+        }
+    }
+
+    .expand-icon, .collapse-icon {
+        transition: transform 0.3s ease;
+        margin-left: 8px;
+    }
+
+    /* Ajuste para o ícone quando expandido */
+    .expanded .expand-icon {
+        animation: rotateIcon 0.3s forwards;
+    }
+</style>
+
+<!-- Adicione o Font Awesome para os ícones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const expandBtn = document.getElementById('expandTimelineBtn');
+    const expandedTimeline = document.querySelector('.timeline-expanded');
+    const expandText = expandBtn.querySelector('.expand-text');
+    const collapseText = expandBtn.querySelector('.collapse-text');
+    const expandIcon = expandBtn.querySelector('.expand-icon');
+    const collapseIcon = expandBtn.querySelector('.collapse-icon');
+
+    expandBtn.addEventListener('click', function() {
+        expandedTimeline.classList.toggle('d-none');
+        expandText.classList.toggle('d-none');
+        collapseText.classList.toggle('d-none');
+        expandIcon.classList.toggle('d-none');
+        collapseIcon.classList.toggle('d-none');
+        
+        // Scroll suave até o início da timeline expandida
+        if (!expandedTimeline.classList.contains('d-none')) {
+            expandedTimeline.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+</script>
+{% endblock content %}

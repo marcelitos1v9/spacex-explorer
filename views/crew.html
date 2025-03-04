@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">Tripulação SpaceX</h1>
+    
+    <!-- Adicionar barra de pesquisa e filtros -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form class="d-flex" method="get">
+                <input class="form-control me-2" type="search" placeholder="Buscar por nome..." 
+                       name="search" value="{{ search }}">
+                <button class="btn btn-outline-primary" type="submit">Buscar</button>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <select class="form-select" name="status" onchange="this.form.submit()">
+                <option value="" {% if not status %}selected{% endif %}>Todos os Status</option>
+                <option value="active" {% if status == 'active' %}selected{% endif %}>Ativo</option>
+                <option value="inactive" {% if status == 'inactive' %}selected{% endif %}>Inativo</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for member in crew %}
+        <div class="col-md-6 col-lg-4">
+            <div class="crew-card card h-100 shadow-lg">
+                <div class="crew-image-wrapper">
+                    <img src="{{ member.image }}" class="card-img-top crew-image" alt="{{ member.name }}">
+                    <div class="crew-overlay">
+                        <div class="crew-social">
+                            <a href="{{ member.wikipedia }}" target="_blank" class="btn btn-light btn-sm">
+                                <i class="fab fa-wikipedia-w"></i> Wikipedia
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">{{ member.name }}</h3>
+                    <div class="crew-info">
+                        <div class="agency-badge">
+                            <span class="badge bg-primary">{{ member.agency }}</span>
+                            <span class="badge {% if member.status == 'active' %}bg-success{% else %}bg-secondary{% endif %}">
+                                {{ member.status|title }}
+                            </span>
+                        </div>
+                        
+                        {% if member.launches %}
+                        <div class="launches-section mt-3">
+                            <h6 class="text-muted mb-2">Lançamentos:</h6>
+                            {% for launch in member.launches %}
+                            <a href="{{ url_for('launch_detail', launch_id=launch) }}" 
+                               class="btn btn-outline-primary btn-sm mb-2">
+                                Ver Lançamento
+                            </a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Adicionar paginação -->
+    {% if total_pages > 1 %}
+    <div class="d-flex justify-content-center mt-5">
+        <nav aria-label="Navegação da tripulação">
+            <ul class="pagination">
+                <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('crew', page=page-1, search=search, status=status) }}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+                
+                {% for p in range(1, total_pages + 1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('crew', page=p, search=search, status=status) }}">
+                        {{ p }}
+                    </a>
+                </li>
+                {% endfor %}
+                
+                <li class="page-item {% if page == total_pages %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('crew', page=page+1, search=search, status=status) }}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.crew-card {
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: none;
+    background-color: #ffffff;
+    position: relative;
+}
+
+.crew-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: -1;
+}
+
+.crew-card:hover {
+    transform: translateY(-8px);
+}
+
+.crew-card:hover::after {
+    opacity: 1;
+}
+
+.crew-image-wrapper {
+    position: relative;
+    height: 350px;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+}
+
+.crew-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.crew-card:hover .crew-image {
+    transform: scale(1.05);
+}
+
+.crew-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, 
+        rgba(0, 82, 136, 0.8), 
+        rgba(0, 0, 0, 0.9));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.crew-card:hover .crew-overlay {
+    opacity: 1;
+}
+
+.crew-social {
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+}
+
+.crew-card:hover .crew-social {
+    transform: translateY(0);
+}
+
+.card-body {
+    padding: 1.5rem;
+    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+}
+
+.card-title {
+    color: #005288;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.crew-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.agency-badge {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    padding: 0.6em 1.2em;
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.badge.bg-primary {
+    background: linear-gradient(45deg, #005288, #0077cc) !important;
+}
+
+.badge.bg-success {
+    background: linear-gradient(45deg, #198754, #28a745) !important;
+}
+
+.badge.bg-secondary {
+    background: linear-gradient(45deg, #6c757d, #495057) !important;
+}
+
+.launches-section {
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding-top: 1.2rem;
+    margin-top: 1rem;
+}
+
+.launches-section h6 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+.btn-outline-primary {
+    color: #005288;
+    border-color: #005288;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(45deg, #005288, #0077cc);
+    border-color: transparent;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,82,136,0.2);
+}
+
+.btn-light {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-light:hover {
+    background-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Animação de entrada dos cards */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.col-md-6 {
+    animation: fadeInUp 0.6s ease backwards;
+}
+
+.col-md-6:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.col-md-6:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* Responsividade melhorada */
+@media (max-width: 768px) {
+    .crew-image-wrapper {
+        height: 300px;
+    }
+    
+    .card-title {
+        font-size: 1.3rem;
+    }
+    
+    .badge {
+        padding: 0.5em 1em;
+    }
+}
+
+/* Container com fundo gradiente suave */
+.container {
+    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 0 30px rgba(0,0,0,0.05);
+}
+
+/* Título da página com destaque */
+h1.text-center {
+    color: #005288;
+    font-weight: 700;
+    letter-spacing: -1px;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+h1.text-center::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(45deg, #005288, #0077cc);
+    border-radius: 2px;
+}
+
+/* Estilos para a paginação */
+.pagination {
+    gap: 0.5rem;
+}
+
+.page-link {
+    border-radius: 8px;
+    border: none;
+    color: #005288;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.page-link:hover {
+    background-color: #005288;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(45deg, #005288, #0077cc);
+    border: none;
+    color: white;
+}
+
+.page-item.disabled .page-link {
+    background-color: rgba(0,0,0,0.1);
+    color: #6c757d;
+}
+
+/* Estilos para os filtros */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 0.6rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #005288;
+    box-shadow: 0 0 0 0.2rem rgba(0,82,136,0.25);
+}
+
+.btn-outline-primary {
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+}
+</style>
+
+{% endblock %} 

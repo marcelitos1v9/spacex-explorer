@@ -1,0 +1,351 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-4">Lançamentos SpaceX</h1>
+    
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-md-8 col-lg-6 mx-auto">
+            <form class="d-flex gap-2" method="get">
+                <input type="text" name="search" class="form-control" placeholder="Buscar por nome..." value="{{ search }}">
+                <select name="status" class="form-select" style="width: auto;">
+                    <option value="" {% if not status %}selected{% endif %}>Todos</option>
+                    <option value="success" {% if status == 'success' %}selected{% endif %}>Sucesso</option>
+                    <option value="failed" {% if status == 'failed' %}selected{% endif %}>Falha</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                {% if search or status %}
+                <a href="{{ url_for('launches') }}" class="btn btn-outline-secondary">Limpar</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        {% for launch in launches %}
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('launch_detail', launch_id=launch.id) }}" class="text-decoration-none">
+                <div class="launch-card card h-100 shadow-lg">
+                    <div class="launch-image-wrapper">
+                        {% if launch.links.patch.large %}
+                        <img src="{{ launch.links.patch.large }}" class="card-img-top launch-image" alt="{{ launch.name }}">
+                        {% else %}
+                        <div class="no-image-placeholder">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        {% endif %}
+                        <div class="launch-overlay">
+                            <span class="view-details">Ver Detalhes</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="card-title mb-0">{{ launch.name }}</h3>
+                            {% if launch.success == true %}
+                            <span class="badge bg-success">Sucesso</span>
+                            {% elif launch.success == false %}
+                            <span class="badge bg-danger">Falha</span>
+                            {% else %}
+                            <span class="badge bg-warning">Pendente</span>
+                            {% endif %}
+                        </div>
+                        
+                        <p class="card-text text-muted">
+                            {% if launch.details %}
+                                {{ launch.details[:150] }}...
+                            {% else %}
+                                Sem detalhes disponíveis
+                            {% endif %}
+                        </p>
+                        
+                        <div class="launch-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>{{ launch.date_utc.split('T')[0] }}</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-hashtag"></i>
+                                <span>Voo #{{ launch.flight_number }}</span>
+                            </div>
+                            {% if launch.cores[0].landing_success == true %}
+                            <div class="stat-item">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>Pouso</span>
+                            </div>
+                            {% elif launch.cores[0].landing_success == false %}
+                            <div class="stat-item">
+                                <i class="fas fa-times-circle text-danger"></i>
+                                <span>Pouso</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Paginação Melhorada -->
+    {% if total_pages > 1 %}
+    <div class="d-flex justify-content-center mt-5">
+        <nav aria-label="Navegação de páginas">
+            <ul class="pagination">
+                <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('launches', page=1, search=search, status=status) }}" aria-label="Primeira">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                
+                <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('launches', page=page-1, search=search, status=status) }}">Anterior</a>
+                </li>
+                
+                {% set start = [page-2, 1]|max %}
+                {% set end = [start+4, total_pages+1]|min %}
+                {% set start = [end-4, 1]|max %}
+                
+                {% for p in range(start, end) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('launches', page=p, search=search, status=status) }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                
+                <li class="page-item {% if page == total_pages %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('launches', page=page+1, search=search, status=status) }}">Próxima</a>
+                </li>
+                
+                <li class="page-item {% if page == total_pages %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('launches', page=total_pages, search=search, status=status) }}" aria-label="Última">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.launch-card {
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: none;
+    background-color: #ffffff;
+    position: relative;
+}
+
+.launch-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: -1;
+}
+
+.launch-card:hover {
+    transform: translateY(-8px);
+}
+
+.launch-card:hover::after {
+    opacity: 1;
+}
+
+.launch-image-wrapper {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+    background-color: #f8f9fa;
+}
+
+.launch-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 1rem;
+    transition: transform 0.5s ease;
+}
+
+.launch-card:hover .launch-image {
+    transform: scale(1.05);
+}
+
+.launch-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, 
+        rgba(0, 82, 136, 0.8), 
+        rgba(0, 0, 0, 0.9));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.launch-card:hover .launch-overlay {
+    opacity: 1;
+}
+
+.view-details {
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 2px solid white;
+    border-radius: 20px;
+}
+
+.launch-card:hover .view-details {
+    transform: translateY(0);
+}
+
+.card-body {
+    padding: 1.5rem;
+    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+}
+
+.card-title {
+    color: #005288;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.badge {
+    padding: 0.6em 1.2em;
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.badge.bg-success {
+    background: linear-gradient(45deg, #198754, #28a745) !important;
+}
+
+.badge.bg-danger {
+    background: linear-gradient(45deg, #dc3545, #c82333) !important;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(45deg, #ffc107, #ffb300) !important;
+}
+
+.launch-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: #6c757d;
+}
+
+.stat-item i {
+    color: #005288;
+    font-size: 1.1rem;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.col-md-6 {
+    animation: fadeInUp 0.6s ease backwards;
+}
+
+.col-md-6:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.col-md-6:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.container {
+    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 0 30px rgba(0,0,0,0.05);
+}
+
+h1.text-center {
+    color: #005288;
+    font-weight: 700;
+    letter-spacing: -1px;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+h1.text-center::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(45deg, #005288, #0077cc);
+    border-radius: 2px;
+}
+
+/* Estilos para os filtros */
+.form-control:focus, .form-select:focus {
+    border-color: #005288;
+    box-shadow: 0 0 0 0.2rem rgba(0,82,136,0.25);
+}
+
+/* Estilos para a paginação */
+.pagination .page-link {
+    color: #005288;
+    border-radius: 20px;
+    margin: 0 2px;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(45deg, #005288, #0077cc);
+    border-color: transparent;
+}
+
+.pagination .page-link:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+}
+
+.pagination .page-item.active .page-link:hover {
+    transform: none;
+}
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}

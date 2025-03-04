@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <form class="d-flex gap-3" method="get">
+                <input type="text" name="search" class="form-control" placeholder="Buscar por nome..." value="{{ search }}">
+                <select name="status" class="form-select" style="width: auto;">
+                    <option value="">Todos os status</option>
+                    <option value="active" {% if status == 'active' %}selected{% endif %}>Ativo</option>
+                    <option value="inactive" {% if status == 'inactive' %}selected{% endif %}>Inativo</option>
+                    <option value="retired" {% if status == 'retired' %}selected{% endif %}>Aposentado</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a href="{{ url_for('landpads') }}" class="btn btn-secondary">Limpar</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabela de Landpads -->
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nome</th>
+                    <th>Nome Completo</th>
+                    <th>Status</th>
+                    <th>Localização</th>
+                    <th>Tentativas</th>
+                    <th>Sucessos</th>
+                    <th>Detalhes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pad in landpads %}
+                <tr>
+                    <td>{{ pad.name }}</td>
+                    <td>{{ pad.full_name }}</td>
+                    <td>
+                        <span class="badge {% if pad.status == 'active' %}bg-success
+                                         {% elif pad.status == 'inactive' %}bg-warning
+                                         {% else %}bg-secondary{% endif %}">
+                            {{ pad.status|title }}
+                        </span>
+                    </td>
+                    <td>{{ pad.locality }}, {{ pad.region }}</td>
+                    <td>{{ pad.landing_attempts }}</td>
+                    <td>{{ pad.landing_successes }}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#padModal{{ loop.index }}">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                    </td>
+                </tr>
+
+                <!-- Modal com detalhes -->
+                <div class="modal fade" id="padModal{{ loop.index }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{ pad.full_name }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {% if pad.images.large %}
+                                <img src="{{ pad.images.large[0] }}" class="img-fluid mb-3" alt="{{ pad.name }}">
+                                {% endif %}
+                                <p><strong>Detalhes:</strong> {{ pad.details }}</p>
+                                <p><strong>Tipo:</strong> {{ pad.type }}</p>
+                                <p><strong>Coordenadas:</strong> {{ pad.latitude }}, {{ pad.longitude }}</p>
+                                {% if pad.wikipedia %}
+                                <p><a href="{{ pad.wikipedia }}" target="_blank" class="btn btn-primary">
+                                    <i class="fab fa-wikipedia-w"></i> Wikipedia
+                                </a></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginação -->
+    {% if total_pages > 1 %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                <a class="page-link" href="{{ url_for('landpads', page=page-1, search=search, status=status) }}">Anterior</a>
+            </li>
+            {% for p in range(1, total_pages + 1) %}
+            <li class="page-item {% if p == page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for('landpads', page=p, search=search, status=status) }}">{{ p }}</a>
+            </li>
+            {% endfor %}
+            <li class="page-item {% if page == total_pages %}disabled{% endif %}">
+                <a class="page-link" href="{{ url_for('landpads', page=page+1, search=search, status=status) }}">Próximo</a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %} 

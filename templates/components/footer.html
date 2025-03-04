@@ -1,0 +1,58 @@
+<!-- Footer Component -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-section">
+                        <h5>Sobre o SpaceX Explorer</h5>
+                        <p class="footer-text">Uma plataforma dedicada a explorar e apresentar dados da SpaceX, trazendo informações sobre lançamentos, foguetes e missões espaciais.</p>
+                        <div class="social-links mt-3">
+                            <a href="https://github.com/r-spacex/SpaceX-API" target="_blank" class="social-link">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="https://www.spacex.com/" target="_blank" class="social-link">
+                                <i class="fas fa-rocket"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-section">
+                        <h5>Links Rápidos</h5>
+                        <ul class="footer-links">
+                            <li><a href="{{url_for('launches')}}"><i class="fas fa-chevron-right"></i> Lançamentos</a></li>
+                            <li><a href="{{url_for('rockets')}}"><i class="fas fa-chevron-right"></i> Foguetes</a></li>
+                            <li><a href="{{url_for('crew')}}"><i class="fas fa-chevron-right"></i> Tripulação</a></li>
+                            <li><a href="{{url_for('api_docs')}}"><i class="fas fa-chevron-right"></i> API Docs</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-12">
+                    <div class="footer-section">
+                        <h5>Recursos</h5>
+                        <ul class="footer-links">
+                            <li><a href="https://www.spacex.com/" target="_blank">Site Oficial SpaceX</a></li>
+                            <li><a href="https://github.com/r-spacex/SpaceX-API" target="_blank">SpaceX API</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">Dados fornecidos pela API SpaceX &copy; {{ year }}</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <img src="{{url_for('static', filename='imgs/logo_nova.jpg')}}" alt="SpaceX Logo" class="footer-logo">
+                </div>
+            </div>
+        </div>
+    </div>
+</footer> 

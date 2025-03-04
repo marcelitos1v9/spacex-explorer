@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">Foguetes SpaceX</h1>
+    
+    <div class="row g-4">
+        {% for rocket in rockets %}
+        <div class="col-md-6 col-lg-4">
+            <div class="rocket-card card h-100 shadow-lg" onclick="window.location.href='{{ url_for('rocket_detail', rocket_id=rocket.id) }}'">
+                <div class="rocket-image-wrapper">
+                    <img src="{{ rocket.flickr_images[0] }}" class="card-img-top rocket-image" alt="{{ rocket.name }}">
+                    <div class="rocket-overlay">
+                        <span class="view-details">Ver Detalhes</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="card-title mb-0">{{ rocket.name }}</h3>
+                        {% if rocket.active %}
+                        <span class="badge bg-success">Ativo</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Inativo</span>
+                        {% endif %}
+                    </div>
+                    <p class="card-text text-muted">{{ rocket.description[:150] }}...</p>
+                    
+                    <div class="rocket-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-ruler-vertical"></i>
+                            <span>{{ rocket.height.meters }}m</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-weight"></i>
+                            <span>{{ "{:,}".format(rocket.mass.kg) }}kg</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-percentage"></i>
+                            <span>{{ rocket.success_rate_pct }}%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Primeiro voo: {{ rocket.first_flight }}</small>
+                        <small class="text-muted">{{ rocket.country }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.rocket-card {
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: none;
+    background-color: #ffffff;
+    position: relative;
+}
+
+.rocket-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: -1;
+}
+
+.rocket-card:hover {
+    transform: translateY(-8px);
+}
+
+.rocket-card:hover::after {
+    opacity: 1;
+}
+
+.rocket-image-wrapper {
+    position: relative;
+    height: 350px;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+}
+
+.rocket-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.rocket-card:hover .rocket-image {
+    transform: scale(1.05);
+}
+
+.rocket-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, 
+        rgba(0, 82, 136, 0.8), 
+        rgba(0, 0, 0, 0.9));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.4s ease;
+}
+
+.rocket-card:hover .rocket-overlay {
+    opacity: 1;
+}
+
+.view-details {
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 2px solid white;
+    border-radius: 20px;
+}
+
+.rocket-card:hover .view-details {
+    transform: translateY(0);
+}
+
+.card-body {
+    padding: 1.5rem;
+    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+}
+
+.card-title {
+    color: #005288;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.badge {
+    padding: 0.6em 1.2em;
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.badge.bg-success {
+    background: linear-gradient(45deg, #198754, #28a745) !important;
+}
+
+.badge.bg-secondary {
+    background: linear-gradient(45deg, #6c757d, #495057) !important;
+}
+
+.rocket-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: #6c757d;
+}
+
+.stat-item i {
+    color: #005288;
+    font-size: 1.1rem;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.col-md-6 {
+    animation: fadeInUp 0.6s ease backwards;
+}
+
+.col-md-6:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.col-md-6:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@media (max-width: 768px) {
+    .rocket-image-wrapper {
+        height: 300px;
+    }
+    
+    .card-title {
+        font-size: 1.3rem;
+    }
+}
+
+.container {
+    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 0 30px rgba(0,0,0,0.05);
+}
+
+h1.text-center {
+    color: #005288;
+    font-weight: 700;
+    letter-spacing: -1px;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+h1.text-center::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(45deg, #005288, #0077cc);
+    border-radius: 2px;
+}
+</style>
+
+<!-- Adicione o Font Awesome se ainda não estiver no base.html -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %} 

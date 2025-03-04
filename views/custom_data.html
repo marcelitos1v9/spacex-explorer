@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    {% if message %}
+    <div class="alert alert-{{ message.type }} alert-dismissible fade show" role="alert">
+        {{ message.text }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <!-- Seção de Lista -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Lista Simples</h5>
+                    <form method="POST" action="{{ url_for('clear_custom_data', data_type='list') }}" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash-alt me-2"></i>Limpar Lista
+                        </button>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <!-- Formulário de Lista -->
+                    <form method="POST" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="list_item" placeholder="Digite um item para a lista...">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus-circle me-2"></i>Adicionar
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Lista de Itens -->
+                    {% if custom_list %}
+                    <div class="list-group">
+                        {% for item in custom_list %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ item }}
+                            <a href="{{ url_for('remove_item', data_type='list', index=loop.index0) }}" 
+                               class="btn btn-danger btn-sm">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-center text-muted my-4">Nenhum item na lista ainda.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Dicionário -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Dicionário de Dados</h5>
+                    <form method="POST" action="{{ url_for('clear_custom_data', data_type='dict') }}" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash-alt me-2"></i>Limpar Dicionário
+                        </button>
+                    </form>
+                </div>
+                <div class="card-body">
+                    <!-- Formulário de Dicionário -->
+                    <form method="POST" class="mb-4">
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Adicione dados em formato JSON
+                            </label>
+                            <div class="dropdown mb-2">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    Selecione um modelo
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="setTemplate('pessoa')">Pessoa</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="setTemplate('produto')">Produto</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="setTemplate('evento')">Evento</a></li>
+                                </ul>
+                            </div>
+                            <textarea class="form-control" id="json_data" name="json_data" rows="8"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus-circle me-2"></i>Adicionar ao Dicionário
+                        </button>
+                    </form>
+
+                    <!-- Tabela de Dicionários -->
+                    {% if custom_dict %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Dados</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in custom_dict %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        <pre class="mb-0"><code>{{ item | tojson(indent=2) }}</code></pre>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('remove_item', data_type='dict', index=loop.index0) }}" 
+                                           class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-center text-muted my-4">Nenhum dicionário adicionado ainda.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Formata o JSON no textarea quando colado
+    document.getElementById('json_data').addEventListener('paste', function(e) {
+        setTimeout(() => {
+            try {
+                const json = JSON.parse(this.value);
+                this.value = JSON.stringify(json, null, 4);
+            } catch (e) {
+                // Se não for JSON válido, mantém o texto original
+            }
+        }, 0);
+    });
+});
+
+// Templates para facilitar a entrada de dados
+const templates = {
+    pessoa: {
+        nome: "João Silva",
+        idade: 30,
+        email: "joao@email.com",
+        telefone: "(11) 99999-9999"
+    },
+    produto: {
+        nome: "Produto Exemplo",
+        preco: 99.99,
+        categoria: "Eletrônicos",
+        estoque: 50
+    },
+    evento: {
+        titulo: "Evento Exemplo",
+        data: "2024-03-20",
+        local: "São Paulo",
+        participantes: 100
+    }
+};
+
+function setTemplate(type) {
+    const textarea = document.getElementById('json_data');
+    textarea.value = JSON.stringify(templates[type], null, 4);
+}
+</script>
+{% endblock %} 

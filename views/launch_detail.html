@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Primeira Row - Imagem e Informações Básicas -->
+    <div class="row mb-5">
+        <!-- Seção de Imagens -->
+        <div class="col-lg-6">
+            <div id="launchCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% if launch.links.patch.large %}
+                    <div class="carousel-item active">
+                        <img src="{{ launch.links.patch.large }}" class="d-block w-100 rounded" alt="{{ launch.name }}">
+                    </div>
+                    {% endif %}
+                    {% if launch.links.flickr.original %}
+                        {% for image in launch.links.flickr.original %}
+                        <div class="carousel-item {% if not launch.links.patch.large and loop.first %}active{% endif %}">
+                            <img src="{{ image }}" class="d-block w-100 rounded" alt="{{ launch.name }}">
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% if (launch.links.patch.large and launch.links.flickr.original) or launch.links.flickr.original|length > 1 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#launchCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#launchCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Próximo</span>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Seção de Informações Básicas -->
+        <div class="col-lg-6">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-0">{{ launch.name }}</h1>
+                    <small class="text-muted">Voo #{{ launch.flight_number }}</small>
+                </div>
+                {% if launch.success == true %}
+                <span class="badge bg-success fs-6">Sucesso</span>
+                {% elif launch.success == false %}
+                <span class="badge bg-danger fs-6">Falha</span>
+                {% else %}
+                <span class="badge bg-warning fs-6">Pendente</span>
+                {% endif %}
+            </div>
+            
+            <p class="lead">{{ launch.details if launch.details else "Sem detalhes disponíveis" }}</p>
+
+            <!-- Estatísticas -->
+            <div class="stats-card">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <h3 class="text-primary">{{ launch.date_local.split('T')[0] }}</h3>
+                        <small>Data do Lançamento</small>
+                    </div>
+                    <div class="col-4">
+                        <h3 class="text-primary">
+                            {% if launch.cores[0].landing_success == true %}
+                            <i class="fas fa-check-circle text-success"></i>
+                            {% elif launch.cores[0].landing_success == false %}
+                            <i class="fas fa-times-circle text-danger"></i>
+                            {% else %}
+                            <i class="fas fa-minus-circle"></i>
+                            {% endif %}
+                        </h3>
+                        <small>Pouso do Booster</small>
+                    </div>
+                    <div class="col-4">
+                        <h3 class="text-primary">{{ launch.cores[0].flight if launch.cores[0].flight else "N/A" }}</h3>
+                        <small>Voo do Booster</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seção do Vídeo -->
+    {% if launch.links.youtube_id %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="info-card video-section">
+                <div class="card-body p-0">
+                    <h5 class="video-title p-4 mb-0">
+                        <i class="fab fa-youtube me-2 text-danger"></i>Vídeo do Lançamento
+                    </h5>
+                    <div class="ratio ratio-16x9 video-wrapper">
+                        <iframe 
+                            src="https://www.youtube.com/embed/{{ launch.links.youtube_id }}" 
+                            title="YouTube video player" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Segunda Row - Cards de Informações Técnicas -->
+    <div class="row g-4">
+        <!-- Detalhes do Lançamento -->
+        <div class="col-md-6 col-lg-4">
+            <div class="info-card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle me-2"></i>Detalhes do Lançamento
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-calendar me-2"></i>Data: {{ launch.date_local.split('T')[0] }}</li>
+                        <li><i class="fas fa-clock me-2"></i>Hora Local: {{ launch.date_local.split('T')[1].split('-')[0] }}</li>
+                        <li><i class="fas fa-globe me-2"></i>Fuso Horário: UTC{{ launch.date_local.split('-')[2] }}</li>
+                        {% if launch.static_fire_date_utc %}
+                        <li><i class="fas fa-fire me-2"></i>Teste Estático: {{ launch.static_fire_date_utc.split('T')[0] }}</li>
+                        {% endif %}
+                        <li><i class="fas fa-hashtag me-2"></i>Voo #{{ launch.flight_number }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Informações do Core -->
+        <div class="col-md-6 col-lg-4">
+            <div class="info-card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-rocket me-2"></i>Informações do Booster
+                    </h5>
+                    <ul class="list-unstyled">
+                        {% if launch.cores[0] %}
+                        <li><i class="fas fa-redo me-2"></i>Reutilizado: {% if launch.cores[0].reused %}Sim (Voo #{{ launch.cores[0].flight }}){% else %}Não{% endif %}</li>
+                        <li><i class="fas fa-plane-arrival me-2"></i>Tentativa de Pouso: {% if launch.cores[0].landing_attempt %}Sim{% else %}Não{% endif %}</li>
+                        {% if launch.cores[0].landing_type %}
+                        <li><i class="fas fa-map-marker-alt me-2"></i>Tipo de Pouso: {{ launch.cores[0].landing_type }}</li>
+                        {% endif %}
+                        <li><i class="fas fa-check-circle me-2"></i>Grid Fins: {% if launch.cores[0].gridfins %}Sim{% else %}Não{% endif %}</li>
+                        <li><i class="fas fa-check-circle me-2"></i>Pernas de Pouso: {% if launch.cores[0].legs %}Sim{% else %}Não{% endif %}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Links e Mídia -->
+        <div class="col-md-6 col-lg-4">
+            <div class="info-card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-link me-2"></i>Links e Mídia
+                    </h5>
+                    <div class="d-grid gap-2">
+                    
+                        {% if launch.links.reddit.launch %}
+                        <a href="{{ launch.links.reddit.launch }}" class="btn btn-primary btn-sm" target="_blank">
+                            <i class="fab fa-reddit me-2"></i>Discussão no Reddit
+                        </a>
+                        {% endif %}
+                        {% if launch.links.reddit.campaign %}
+                        <a href="{{ launch.links.reddit.campaign }}" class="btn btn-info btn-sm text-white" target="_blank">
+                            <i class="fab fa-reddit me-2"></i>Campanha no Reddit
+                        </a>
+                        {% endif %}
+                        {% if launch.links.reddit.recovery %}
+                        <a href="{{ launch.links.reddit.recovery }}" class="btn btn-secondary btn-sm" target="_blank">
+                            <i class="fab fa-reddit me-2"></i>Recuperação no Reddit
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações da Missão -->
+        <div class="col-md-6 col-lg-4">
+            <div class="info-card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-space-shuttle me-2"></i>Informações da Missão
+                    </h5>
+                    <ul class="list-unstyled">
+                        {% if launch.fairings %}
+                        <li><i class="fas fa-shield-alt me-2"></i>Carenagem Reutilizada: 
+                            {% if launch.fairings.reused %}Sim{% elif launch.fairings.reused == false %}Não{% else %}N/A{% endif %}
+                        </li>
+                        <li><i class="fas fa-recycle me-2"></i>Tentativa de Recuperação: 
+                            {% if launch.fairings.recovery_attempt %}Sim{% elif launch.fairings.recovery_attempt == false %}Não{% else %}N/A{% endif %}
+                        </li>
+                        {% endif %}
+                        <li><i class="fas fa-rocket me-2"></i>ID do Foguete: {{ launch.rocket }}</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i>Base de Lançamento: {{ launch.launchpad }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="text-center mt-5">
+        <a href="{{ url_for('launches') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Voltar para Lançamentos
+        </a>
+    </div>
+</div>
+
+<style>
+/* Mesmos estilos do rocket_detail.html */
+.carousel-item img {
+    height: 500px;
+    object-fit: contain;
+    background-color: #f8f9fa;
+}
+
+.info-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 82, 136, 0.15);
+}
+
+/* Estilo para o card do vídeo */
+.video-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 82, 136, 0.15);
+}
+
+/* Ajuste responsivo para o vídeo */
+@media (max-width: 768px) {
+    .video-card {
+        margin: 0 15px;
+    }
+}
+
+/* Estilos específicos para a seção de vídeo */
+.video-section {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.video-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 82, 136, 0.15);
+}
+
+.video-title {
+    font-size: 1.25rem;
+    color: #005288;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 0;
+}
+
+.video-wrapper {
+    background-color: #000;
+}
+
+.video-wrapper iframe {
+    border: none;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+    .video-section {
+        margin-bottom: 2rem;
+    }
+    
+    .video-title {
+        font-size: 1.1rem;
+        padding: 1rem !important;
+    }
+}
+
+/* Animação de entrada */
+.video-section {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+{% endblock %} 

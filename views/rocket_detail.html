@@ -1,0 +1,473 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Primeira Row - Carrossel e Informações Básicas -->
+    <div class="row mb-5">
+        <!-- Seção de Imagens -->
+        <div class="col-lg-6">
+            <div id="rocketCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in rocket.flickr_images %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <img src="{{ image }}" class="d-block w-100 rounded" alt="{{ rocket.name }}">
+                    </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#rocketCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#rocketCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Próximo</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Seção de Informações Básicas -->
+        <div class="col-lg-6">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-0">{{ rocket.name }}</h1>
+                    <small class="text-muted">{{ rocket.company }} | {{ rocket.country }}</small>
+                </div>
+                {% if rocket.active %}
+                <span class="badge bg-success fs-6">Ativo</span>
+                {% else %}
+                <span class="badge bg-secondary fs-6">Inativo</span>
+                {% endif %}
+            </div>
+            
+            <p class="lead">{{ rocket.description }}</p>
+
+            <!-- Estatísticas -->
+            <div class="stats-card">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <h3 class="text-primary">${{ "{:,.0f}".format(rocket.cost_per_launch/1000000) }}M</h3>
+                        <small>Custo/Lançamento</small>
+                    </div>
+                    <div class="col-4">
+                        <h3 class="text-primary">{{ rocket.success_rate_pct }}%</h3>
+                        <small>Taxa de Sucesso</small>
+                    </div>
+                    <div class="col-4">
+                        <h3 class="text-primary">{{ rocket.stages }}</h3>
+                        <small>Estágios</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Segunda Row - Cards de Informações Técnicas -->
+    <div class="row g-4">
+        <!-- Informações Básicas -->
+        <div class="col-md-6 col-lg-4">
+            <div class="info-card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle me-2"></i>Informações Básicas
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-calendar me-2"></i>Primeiro Voo: {{ rocket.first_flight }}</li>
+                        <li><i class="fas fa-layer-group me-2"></i>Estágios: {{ rocket.stages }}</li>
+                        <li><i class="fas fa-rocket me-2"></i>Propulsores: {{ rocket.boosters }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dimensões -->
+        <div class="col-md-6 col-lg-4">
+            <div class="info-card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-ruler me-2"></i>Dimensões
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-arrows-alt-v me-2"></i>Altura: {{ rocket.height.meters }}m ({{ rocket.height.feet }}ft)</li>
+                        <li><i class="fas fa-circle me-2"></i>Diâmetro: {{ rocket.diameter.meters }}m ({{ rocket.diameter.feet }}ft)</li>
+                        <li><i class="fas fa-weight-hanging me-2"></i>Massa: {{ "{:,}".format(rocket.mass.kg) }}kg</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Primeiro Estágio -->
+        <div class="col-md-6 col-lg-4">
+            <div class="info-card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-fire me-2"></i>Primeiro Estágio
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-gas-pump me-2"></i>Combustível: {{ rocket.first_stage.fuel_amount_tons }}t</li>
+                        <li><i class="fas fa-clock me-2"></i>Tempo de Queima: {{ rocket.first_stage.burn_time_sec }}s</li>
+                        <li><i class="fas fa-sync me-2"></i>Reusável: {% if rocket.first_stage.reusable %}Sim{% else %}Não{% endif %}</li>
+                        <li><i class="fas fa-tachometer-alt me-2"></i>Empuxo (nível do mar): {{ rocket.first_stage.thrust_sea_level.kN }}kN</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Segundo Estágio -->
+        <div class="col-md-6 col-lg-4">
+            <div class="info-card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-fire-alt me-2"></i>Segundo Estágio
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-gas-pump me-2"></i>Combustível: {{ rocket.second_stage.fuel_amount_tons }}t</li>
+                        <li><i class="fas fa-clock me-2"></i>Tempo de Queima: {{ rocket.second_stage.burn_time_sec }}s</li>
+                        <li><i class="fas fa-sync me-2"></i>Reusável: {% if rocket.second_stage.reusable %}Sim{% else %}Não{% endif %}</li>
+                        <li><i class="fas fa-tachometer-alt me-2"></i>Empuxo: {{ rocket.second_stage.thrust.kN }}kN</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Motores -->
+        <div class="col-md-6 col-lg-4">
+            <div class="info-card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-cogs me-2"></i>Motores
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-info-circle me-2"></i>Tipo: {{ rocket.engines.type }}</li>
+                                <li><i class="fas fa-code-branch me-2"></i>Versão: {{ rocket.engines.version }}</li>
+                                <li><i class="fas fa-hashtag me-2"></i>Quantidade: {{ rocket.engines.number }}</li>
+                                <li><i class="fas fa-percentage me-2"></i>ISP (nível do mar): {{ rocket.engines.isp.sea_level }}</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-flask me-2"></i>Propelente 1: {{ rocket.engines.propellant_1 }}</li>
+                                <li><i class="fas fa-flask me-2"></i>Propelente 2: {{ rocket.engines.propellant_2 }}</li>
+                                <li><i class="fas fa-balance-scale me-2"></i>Relação Empuxo/Peso: {{ rocket.engines.thrust_to_weight }}</li>
+                                <li><i class="fas fa-percentage me-2"></i>ISP (vácuo): {{ rocket.engines.isp.vacuum }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Carga Útil -->
+        <div class="col-md-6 col-lg-4">
+            <div class="info-card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-box me-2"></i>Capacidade de Carga
+                    </h5>
+                    <div class="row">
+                        {% for payload in rocket.payload_weights %}
+                        <div class="col-md-4">
+                            <div class="payload-card">
+                                <h6>{{ payload.name }}</h6>
+                                <p class="mb-0">{{ "{:,}".format(payload.kg) }}kg ({{ "{:,}".format(payload.lb) }}lb)</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="text-center mt-5">
+        <a href="{{ rocket.wikipedia }}" class="btn btn-primary" target="_blank">
+            <i class="fab fa-wikipedia-w me-2"></i>Wikipedia
+        </a>
+        <a href="{{ url_for('rockets') }}" class="btn btn-outline-secondary ms-2">
+            <i class="fas fa-arrow-left me-2"></i>Voltar
+        </a>
+    </div>
+</div>
+
+<style>
+/* Estilos existentes */
+.carousel-item img {
+    height: 500px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Novo background e container principal */
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Cards melhorados */
+.info-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 82, 136, 0.1);
+    height: 100%;
+    overflow: hidden;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 82, 136, 0.15);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    color: #005288;
+    font-weight: bold;
+    border-bottom: 2px solid rgba(0, 82, 136, 0.1);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    position: relative;
+}
+
+.card-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: #005288;
+}
+
+/* Lista de itens melhorada */
+.list-unstyled li {
+    margin-bottom: 12px;
+    color: #444;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.list-unstyled li:hover {
+    background: rgba(0, 82, 136, 0.05);
+    transform: translateX(5px);
+}
+
+.list-unstyled li i {
+    color: #005288;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    background: rgba(0, 82, 136, 0.1);
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+/* Stats card melhorado */
+.stats-card {
+    background: linear-gradient(135deg, #005288 0%, #003366 100%);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin: 30px 0;
+}
+
+.stats-card h3 {
+    color: white;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 2rem;
+}
+
+.stats-card small {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Payload cards melhorados */
+.payload-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.payload-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.payload-card h6 {
+    color: #005288;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+/* Botões melhorados */
+.btn {
+    padding: 12px 25px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #005288 0%, #003366 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 82, 136, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 82, 136, 0.4);
+    background: linear-gradient(135deg, #003366 0%, #002244 100%);
+}
+
+.btn-outline-secondary {
+    border: 2px solid #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background: #6c757d;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Badge melhorado */
+.badge {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    border-radius: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Carrossel melhorado */
+.carousel {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.carousel-item {
+    transition: transform 0.6s ease-in-out;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 10%;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.carousel:hover .carousel-control-prev,
+.carousel:hover .carousel-control-next {
+    opacity: 1;
+}
+
+/* Responsividade melhorada */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .carousel-item img {
+        height: 300px;
+    }
+    
+    .info-card {
+        margin-bottom: 20px;
+    }
+
+    .stats-card h3 {
+        font-size: 1.5rem;
+    }
+
+    .stats-card small {
+        font-size: 0.8rem;
+    }
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.info-card, .stats-card, .payload-card {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #005288;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #003366;
+}
+
+/* Ajustes para o novo layout */
+.stats-card {
+    margin-top: 2rem;
+}
+
+.info-card {
+    height: 100%;
+    min-height: 250px;
+}
+
+@media (max-width: 768px) {
+    .mb-5 {
+        margin-bottom: 2rem !important;
+    }
+    
+    .info-card {
+        min-height: auto;
+    }
+}
+</style>
+{% endblock %} 
