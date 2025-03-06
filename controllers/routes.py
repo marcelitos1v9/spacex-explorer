@@ -229,6 +229,32 @@ def init_app(app):
                     message = {'type': 'danger', 'text': 'Erro: JSON inválido'}
                 except Exception as e:
                     message = {'type': 'danger', 'text': f'Erro: {str(e)}'}
+            
+            # Tratamento para edição de itens
+            elif 'edit_type' in request.form and 'edit_index' in request.form and 'edit_value' in request.form:
+                edit_type = request.form.get('edit_type')
+                try:
+                    index = int(request.form.get('edit_index'))
+                    value = request.form.get('edit_value')
+                    
+                    if edit_type == 'list':
+                        if 0 <= index < len(custom_list):
+                            custom_list[index] = value
+                            message = {'type': 'success', 'text': 'Item atualizado com sucesso!'}
+                        else:
+                            message = {'type': 'danger', 'text': 'Índice inválido'}
+                    
+                    elif edit_type == 'dict':
+                        if 0 <= index < len(custom_dict):
+                            try:
+                                custom_dict[index] = json.loads(value)
+                                message = {'type': 'success', 'text': 'Dicionário atualizado com sucesso!'}
+                            except json.JSONDecodeError:
+                                message = {'type': 'danger', 'text': 'Erro: JSON inválido'}
+                        else:
+                            message = {'type': 'danger', 'text': 'Índice inválido'}
+                except ValueError:
+                    message = {'type': 'danger', 'text': 'Erro ao processar o índice'}
         
         return render_template('custom_data.html', 
                              year=year, 

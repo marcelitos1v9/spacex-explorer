@@ -27,7 +27,14 @@
         <div class="col-md-6 col-lg-4">
             <div class="crew-card card h-100 shadow-lg">
                 <div class="crew-image-wrapper">
-                    <img src="{{ member.image }}" class="card-img-top crew-image" alt="{{ member.name }}">
+                    {% if member.image %}
+                        <img src="{{ member.image|safe }}" class="card-img-top crew-image" alt="{{ member.name }}" 
+                             loading="lazy"
+                             onerror="logImageError(this); this.onerror=null; this.src='/static/images/placeholder.jpg';"
+                             crossorigin="anonymous">
+                    {% else %}
+                        <img src="/static/images/placeholder.jpg" class="card-img-top crew-image" alt="{{ member.name }}">
+                    {% endif %}
                     <div class="crew-overlay">
                         <div class="crew-social">
                             <a href="{{ member.wikipedia }}" target="_blank" class="btn btn-light btn-sm">
@@ -378,5 +385,11 @@ h1.text-center::after {
     padding: 0.6rem 1.2rem;
 }
 </style>
+
+<script>
+function logImageError(image) {
+    console.error('Erro ao carregar imagem:', image.src);
+}
+</script>
 
 {% endblock %} 
