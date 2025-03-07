@@ -12,19 +12,37 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="header-card">
-                <h1 class="text-center mb-4">Gerenciador de Dados Personalizados</h1>
+                <h1 class="text-center mb-3">Gerenciador de Dados Personalizados</h1>
                 <p class="text-center text-white mb-4">Adicione, visualize e gerencie seus dados personalizados de forma simples e eficiente.</p>
-                <div class="quick-guide">
-                    <div class="guide-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Adicione itens simples à sua lista">
-                        <i class="fas fa-list-ul"></i>
-                        <span>Lista Simples</span>
+                
+                <!-- Guia rápido com passos numerados -->
+                <div class="steps-container">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h5>Escolha o tipo de dado</h5>
+                            <p>Lista simples ou dicionário JSON</p>
+                        </div>
                     </div>
-                    <div class="guide-separator">
-                        <i class="fas fa-plus"></i>
+                    <div class="step-arrow">
+                        <i class="fas fa-chevron-right"></i>
                     </div>
-                    <div class="guide-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Gerencie dados estruturados em formato JSON">
-                        <i class="fas fa-code"></i>
-                        <span>Dicionário JSON</span>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h5>Adicione seus dados</h5>
+                            <p>Digite texto ou use modelos JSON</p>
+                        </div>
+                    </div>
+                    <div class="step-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h5>Gerencie seus dados</h5>
+                            <p>Edite, remova ou limpe dados</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -39,10 +57,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h2 class="mb-0">
                             <i class="fas fa-list me-2"></i>Lista Simples
-                            <i class="fas fa-question-circle ms-2 text-white-50" 
-                               data-bs-toggle="tooltip" 
-                               data-bs-placement="right" 
-                               title="Adicione itens individuais à sua lista. Cada item pode ser editado ou removido posteriormente."></i>
+                            <span class="badge bg-info ms-2">Texto</span>
                         </h2>
                         <form method="POST" action="{{ url_for('clear_custom_data', data_type='list') }}" class="d-inline">
                             <button type="submit" class="btn btn-danger btn-sm" 
@@ -56,14 +71,24 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <!-- Instruções claras -->
+                    <div class="instructions-box mb-3">
+                        <div class="instructions-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="instructions-text">
+                            <h6>Como usar a Lista Simples:</h6>
+                            <p>Digite qualquer texto no campo abaixo e clique em "Adicionar" para incluir na lista. 
+                               Você pode editar ou remover itens a qualquer momento.</p>
+                        </div>
+                    </div>
+
                     <!-- Formulário de Lista -->
                     <form method="POST" class="mb-4">
+                        <label for="list_item" class="form-label">Digite um item para adicionar à lista:</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="list_item" 
-                                   placeholder="Digite um item para a lista..." 
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="Digite o texto do item que deseja adicionar"
+                            <input type="text" class="form-control" id="list_item" name="list_item" 
+                                   placeholder="Ex: Comprar leite, Ligar para João..." 
                                    required>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-plus-circle me-2"></i>Adicionar
@@ -73,34 +98,37 @@
 
                     <!-- Lista de Itens -->
                     {% if custom_list %}
-                    <div class="list-group list-group-flush custom-list">
-                        {% for item in custom_list %}
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <span class="item-text">{{ item }}</span>
-                            <div class="btn-group action-buttons">
-                                <button class="btn btn-outline-primary btn-sm edit-item" 
-                                        data-item="{{ item }}" 
-                                        data-index="{{ loop.index0 }}"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        title="Editar este item">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <a href="{{ url_for('remove_item', data_type='list', index=loop.index0) }}" 
-                                   class="btn btn-outline-danger btn-sm"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="top"
-                                   title="Remover este item"
-                                   data-confirm="Tem certeza que deseja remover este item?">
-                                    <i class="fas fa-times"></i>
-                                </a>
-                            </div>
+                    <div class="data-section">
+                        <div class="section-header">
+                            <h5><i class="fas fa-clipboard-list me-2"></i>Seus Itens</h5>
+                            <span class="badge bg-primary">{{ custom_list|length }} item(s)</span>
                         </div>
-                        {% endfor %}
-                    </div>
-                    <div class="mt-3 d-flex justify-content-between align-items-center">
-                        <span class="text-muted small">Clique nos botões <i class="fas fa-edit"></i> ou <i class="fas fa-times"></i> para editar ou remover itens</span>
-                        <span class="badge bg-primary">Total: {{ custom_list|length }} item(s)</span>
+                        
+                        <div class="list-group list-group-flush custom-list">
+                            {% for item in custom_list %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="item-text">{{ item }}</span>
+                                <div class="btn-group action-buttons">
+                                    <button class="btn btn-outline-primary btn-sm edit-item" 
+                                            data-item="{{ item }}" 
+                                            data-index="{{ loop.index0 }}"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="Editar este item">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <a href="{{ url_for('remove_item', data_type='list', index=loop.index0) }}" 
+                                       class="btn btn-outline-danger btn-sm"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
+                                       title="Remover este item"
+                                       data-confirm="Tem certeza que deseja remover este item?">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
                     {% else %}
                     <div class="empty-state">
@@ -124,10 +152,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h2 class="mb-0">
                             <i class="fas fa-code me-2"></i>Dicionário de Dados
-                            <i class="fas fa-question-circle ms-2 text-white-50" 
-                               data-bs-toggle="tooltip" 
-                               data-bs-placement="right" 
-                               title="Adicione dados estruturados em formato JSON. Use os modelos predefinidos ou crie seu próprio formato."></i>
+                            <span class="badge bg-warning ms-2">JSON</span>
                         </h2>
                         <form method="POST" action="{{ url_for('clear_custom_data', data_type='dict') }}" class="d-inline">
                             <button type="submit" class="btn btn-danger btn-sm"
@@ -141,31 +166,33 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <!-- Instruções claras -->
+                    <div class="instructions-box mb-3">
+                        <div class="instructions-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="instructions-text">
+                            <h6>Como usar o Dicionário JSON:</h6>
+                            <p>Use os modelos predefinidos ou crie seu próprio JSON. Não sabe o que é JSON? 
+                               <button type="button" class="btn btn-link btn-sm p-0 text-info" 
+                                       data-bs-toggle="modal" 
+                                       data-bs-target="#jsonHelpModal">
+                                   Clique aqui para aprender
+                               </button>
+                            </p>
+                        </div>
+                    </div>
+
                     <!-- Formulário de Dicionário -->
                     <form method="POST" class="mb-4" id="jsonForm">
                         <div class="mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label class="form-label">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    Adicione dados em formato JSON
-                                </label>
-                                <div class="json-help">
-                                    <button type="button" class="btn btn-link btn-sm text-info p-0" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#jsonHelpModal">
-                                        <i class="fas fa-question-circle"></i> Como usar JSON?
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="d-flex gap-2 mb-2">
+                            <label class="form-label">Selecione um modelo ou crie seu próprio JSON:</label>
+                            <div class="d-flex gap-2 mb-3">
                                 <div class="dropdown">
                                     <button class="btn btn-secondary dropdown-toggle" 
                                             type="button" 
-                                            data-bs-toggle="dropdown"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="top"
-                                            title="Use um modelo predefinido como base">
-                                        <i class="fas fa-file-code me-1"></i> Modelos
+                                            data-bs-toggle="dropdown">
+                                        <i class="fas fa-file-code me-1"></i> Modelos Prontos
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" href="#" onclick="setTemplate('pessoa')">
@@ -185,11 +212,8 @@
                                 </div>
                                 <button type="button" 
                                         class="btn btn-outline-secondary" 
-                                        onclick="formatJson()"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        title="Organiza o JSON para melhor visualização">
-                                    <i class="fas fa-align-left me-1"></i> Formatar JSON
+                                        onclick="formatJson()">
+                                        <i class="fas fa-align-left me-1"></i> Formatar JSON
                                 </button>
                             </div>
                             <textarea class="form-control code-editor" 
@@ -200,60 +224,63 @@
                                      placeholder="Digite ou cole seu JSON aqui..."></textarea>
                             <div id="jsonValidationMessage" class="form-text mt-1"></div>
                             <div class="json-tips mt-2 small text-muted">
-                                <i class="fas fa-lightbulb me-1"></i> Dica: Use os modelos predefinidos como base ou cole seu próprio JSON
+                                <i class="fas fa-lightbulb me-1"></i> Dica: Selecione um modelo acima ou cole seu próprio JSON
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="submitJsonBtn">
+                        <button type="submit" class="btn btn-primary" id="submitJsonBtn" disabled>
                             <i class="fas fa-plus-circle me-2"></i>Adicionar ao Dicionário
                         </button>
                     </form>
 
                     <!-- Tabela de Dicionários -->
                     {% if custom_dict %}
-                    <div class="table-responsive custom-table">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Dados</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in custom_dict %}
-                                <tr>
-                                    <td>{{ loop.index }}</td>
-                                    <td>
-                                        <pre class="mb-0 json-display"><code>{{ item | tojson(indent=2) }}</code></pre>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button class="btn btn-outline-primary btn-sm edit-json" 
-                                                    data-json='{{ item | tojson }}' 
-                                                    data-index="{{ loop.index0 }}"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="top"
-                                                    title="Editar este item">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <a href="{{ url_for('remove_item', data_type='dict', index=loop.index0) }}" 
-                                               class="btn btn-outline-danger btn-sm"
-                                               data-bs-toggle="tooltip"
-                                               data-bs-placement="top"
-                                               title="Remover este item"
-                                               data-confirm="Tem certeza que deseja remover este item?">
-                                                <i class="fas fa-times"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="mt-3 d-flex justify-content-between align-items-center">
-                        <span class="text-muted small">Clique nos botões <i class="fas fa-edit"></i> ou <i class="fas fa-times"></i> para editar ou remover itens</span>
-                        <span class="badge bg-primary">Total: {{ custom_dict|length }} item(s)</span>
+                    <div class="data-section">
+                        <div class="section-header">
+                            <h5><i class="fas fa-database me-2"></i>Seus Dados JSON</h5>
+                            <span class="badge bg-primary">{{ custom_dict|length }} item(s)</span>
+                        </div>
+                        
+                        <div class="table-responsive custom-table">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Dados</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in custom_dict %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>
+                                            <pre class="mb-0 json-display"><code>{{ item | tojson(indent=2) }}</code></pre>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button class="btn btn-outline-primary btn-sm edit-json" 
+                                                        data-json='{{ item | tojson }}' 
+                                                        data-index="{{ loop.index0 }}"
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top"
+                                                        title="Editar este item">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <a href="{{ url_for('remove_item', data_type='dict', index=loop.index0) }}" 
+                                                   class="btn btn-outline-danger btn-sm"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   title="Remover este item"
+                                                   data-confirm="Tem certeza que deseja remover este item?">
+                                                    <i class="fas fa-times"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     {% else %}
                     <div class="empty-state">
@@ -280,41 +307,106 @@
             <div class="modal-header">
                 <h5 class="modal-title">
                     <i class="fas fa-question-circle me-2"></i>
-                    Como usar JSON?
+                    O que é JSON e como usar?
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="json-help-content">
-                    <h6 class="mb-3">O que é JSON?</h6>
-                    <p>JSON (JavaScript Object Notation) é um formato leve de troca de dados. É fácil para humanos ler e escrever e fácil para máquinas analisar e gerar.</p>
+                    <div class="help-section">
+                        <h6 class="mb-3">O que é JSON?</h6>
+                        <p>JSON (JavaScript Object Notation) é um formato leve de troca de dados. É fácil para humanos ler e escrever e fácil para máquinas analisar e gerar.</p>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            JSON é usado para armazenar e transmitir dados estruturados, como informações de pessoas, produtos, eventos, etc.
+                        </div>
+                    </div>
                     
-                    <h6 class="mt-4 mb-3">Estrutura Básica</h6>
-                    <pre class="json-example">
+                    <div class="help-section">
+                        <h6 class="mb-3">Estrutura Básica</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="json-example-card">
+                                    <div class="card-header">Exemplo de JSON</div>
+                                    <pre class="json-example">
 {
     "nome": "João Silva",
     "idade": 30,
     "email": "joao@email.com"
 }</pre>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="json-explanation">
+                                    <p><strong>Explicação:</strong></p>
+                                    <ul>
+                                        <li>Chaves <code>{}</code> delimitam um objeto</li>
+                                        <li>Dados são organizados em pares "chave": "valor"</li>
+                                        <li>Cada par é separado por vírgula</li>
+                                        <li>Chaves sempre são textos entre aspas duplas</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <h6 class="mt-4 mb-3">Tipos de Dados Suportados</h6>
-                    <ul class="json-types">
-                        <li><code>"texto"</code> - Textos entre aspas duplas</li>
-                        <li><code>42</code> - Números</li>
-                        <li><code>true</code> ou <code>false</code> - Valores booleanos</li>
-                        <li><code>null</code> - Valor nulo</li>
-                        <li><code>[]</code> - Arrays (listas)</li>
-                        <li><code>{}</code> - Objetos (dicionários)</li>
-                    </ul>
+                    <div class="help-section">
+                        <h6 class="mb-3">Tipos de Dados Suportados</h6>
+                        <div class="json-types-grid">
+                            <div class="json-type-card">
+                                <div class="type-name">Texto</div>
+                                <div class="type-example"><code>"Olá mundo"</code></div>
+                                <div class="type-desc">Textos entre aspas duplas</div>
+                            </div>
+                            <div class="json-type-card">
+                                <div class="type-name">Número</div>
+                                <div class="type-example"><code>42</code> ou <code>3.14</code></div>
+                                <div class="type-desc">Inteiros ou decimais</div>
+                            </div>
+                            <div class="json-type-card">
+                                <div class="type-name">Booleano</div>
+                                <div class="type-example"><code>true</code> ou <code>false</code></div>
+                                <div class="type-desc">Valores verdadeiro/falso</div>
+                            </div>
+                            <div class="json-type-card">
+                                <div class="type-name">Nulo</div>
+                                <div class="type-example"><code>null</code></div>
+                                <div class="type-desc">Representa valor vazio</div>
+                            </div>
+                            <div class="json-type-card">
+                                <div class="type-name">Array</div>
+                                <div class="type-example"><code>["item1", "item2"]</code></div>
+                                <div class="type-desc">Lista de valores</div>
+                            </div>
+                            <div class="json-type-card">
+                                <div class="type-name">Objeto</div>
+                                <div class="type-example"><code>{"chave": "valor"}</code></div>
+                                <div class="type-desc">Conjunto de pares chave/valor</div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="alert alert-info mt-4">
-                        <i class="fas fa-lightbulb me-2"></i>
-                        <strong>Dica:</strong> Use o botão "Formatar JSON" para organizar automaticamente seu código e verificar se está válido.
+                    <div class="help-section">
+                        <h6 class="mb-3">Como usar nesta página</h6>
+                        <div class="steps">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-desc">Selecione um modelo pronto ou crie seu próprio JSON</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-desc">Use o botão "Formatar JSON" para verificar se está válido</div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-desc">Clique em "Adicionar ao Dicionário" para salvar</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendi!</button>
             </div>
         </div>
     </div>
@@ -593,272 +685,220 @@
 }
 
 /* Novos estilos para melhorar a intuitividade */
-.quick-guide {
+.steps-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
     margin-top: 2rem;
-    padding: 1rem;
+    padding: 1.5rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 12px;
 }
 
-.guide-item {
+.step-item {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    gap: 1rem;
     color: white;
-    cursor: help;
 }
 
-.guide-item i {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-}
-
-.guide-separator {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-.json-help-content {
-    font-size: 0.95rem;
-}
-
-.json-example {
-    background: #f8f9fa;
-    padding: 1rem;
-    border-radius: 8px;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-}
-
-.json-types {
-    list-style: none;
-    padding-left: 0;
-}
-
-.json-types li {
-    margin-bottom: 0.5rem;
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
 }
 
-.json-types code {
-    background: #f8f9fa;
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
+.step-content {
+    text-align: left;
+}
+
+.step-content h5 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.step-content p {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.step-arrow {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.2rem;
+}
+
+/* Caixas de instruções */
+.instructions-box {
+    display: flex;
+    gap: 1rem;
+    background: rgba(0, 82, 136, 0.05);
+    border-left: 4px solid #005288;
+    padding: 1rem;
+    border-radius: 0 8px 8px 0;
+}
+
+.instructions-icon {
+    font-size: 1.5rem;
     color: #005288;
 }
 
-.action-buttons {
-    opacity: 0.2;
-    transition: opacity 0.3s ease;
-}
-
-.list-group-item:hover .action-buttons {
-    opacity: 1;
-}
-
-.json-tips {
-    color: #6c757d;
-    font-style: italic;
-}
-
-/* Melhorias nos tooltips */
-.tooltip {
-    font-size: 0.85rem;
-}
-
-.tooltip-inner {
-    max-width: 250px;
-    padding: 0.5rem 1rem;
-    background: rgba(0, 82, 136, 0.95);
-    backdrop-filter: blur(5px);
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Estilos para os modais */
-.modal-content {
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 82, 136, 0.15);
-    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
-}
-
-.modal-header {
-    background: linear-gradient(45deg, #005288, #0077cc);
-    color: white;
-    border-radius: 12px 12px 0 0;
-    border-bottom: none;
-    padding: 1.5rem;
-}
-
-.modal-title {
+.instructions-text h6 {
+    margin: 0 0 0.5rem 0;
     font-weight: 600;
-    letter-spacing: -0.5px;
+    color: #005288;
 }
 
-.modal-header .btn-close {
-    filter: brightness(0) invert(1);
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
+.instructions-text p {
+    margin: 0;
+    font-size: 0.9rem;
 }
 
-.modal-header .btn-close:hover {
-    opacity: 1;
+/* Seções de dados */
+.data-section {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.modal-body {
-    padding: 1.5rem;
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    background: rgba(0, 82, 136, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.section-header h5 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #005288;
+}
+
+/* Melhorias no modal de ajuda JSON */
+.help-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.help-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.json-example-card {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.json-example-card .card-header {
+    background: #005288;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.json-example {
+    margin: 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 0;
+    border: none;
+}
+
+.json-explanation {
+    padding: 0.5rem 0 0 1rem;
+}
+
+.json-explanation ul {
+    padding-left: 1.2rem;
+}
+
+.json-explanation li {
+    margin-bottom: 0.5rem;
+}
+
+.json-types-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.json-type-card {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    background: #f8f9fa;
+}
+
+.type-name {
+    font-weight: 600;
+    color: #005288;
+    margin-bottom: 0.5rem;
+}
+
+.type-example {
+    margin-bottom: 0.5rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.type-desc {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.step .step-number {
+    width: 30px;
+    height: 30px;
+    background: #005288;
+    color: white;
     font-size: 1rem;
 }
 
-.modal-footer {
-    background: rgba(248, 249, 250, 0.8);
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 0 0 12px 12px;
-    padding: 1rem 1.5rem;
+.step .step-desc {
+    font-size: 0.95rem;
 }
 
-/* Estilos específicos para cada tipo de modal */
-#confirmationModal .modal-header {
-    background: linear-gradient(45deg, #005288, #0077cc);
-}
-
-#errorModal .modal-header {
-    background: linear-gradient(45deg, #dc3545, #ff4d5a);
-}
-
-#jsonHelpModal .modal-header {
-    background: linear-gradient(45deg, #005288, #0077cc);
-}
-
-#editItemModal .modal-header,
-#editJsonModal .modal-header {
-    background: linear-gradient(45deg, #005288, #0077cc);
-}
-
-/* Estilos para os botões dos modais */
-.modal .btn {
-    padding: 0.5rem 1.5rem;
-    font-weight: 500;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.modal .btn-primary {
-    background: linear-gradient(45deg, #005288, #0077cc);
-    border: none;
-    color: white;
-}
-
-.modal .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 82, 136, 0.2);
-}
-
-.modal .btn-secondary {
-    background: #6c757d;
-    border: none;
-    color: white;
-}
-
-.modal .btn-secondary:hover {
-    background: #5a6268;
-    transform: translateY(-2px);
-}
-
-/* Estilos para elementos dentro dos modais */
-.modal .form-control {
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 0.75rem 1rem;
-    transition: all 0.3s ease;
-}
-
-.modal .form-control:focus {
-    border-color: #005288;
-    box-shadow: 0 0 0 0.2rem rgba(0, 82, 136, 0.25);
-}
-
-.modal .form-label {
-    font-weight: 500;
-    color: #495057;
-    margin-bottom: 0.5rem;
-}
-
-/* Animações dos modais */
-.modal.fade .modal-dialog {
-    transform: scale(0.95);
-    transition: transform 0.3s ease;
-}
-
-.modal.show .modal-dialog {
-    transform: scale(1);
-}
-
-/* Estilos para o conteúdo de ajuda JSON */
-.json-help-content h6 {
-    color: #005288;
-    font-weight: 600;
-    margin-top: 1.5rem;
-}
-
-.json-example {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    margin: 1rem 0;
-}
-
-.json-types {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.modal .alert {
-    border: none;
-    border-radius: 8px;
-}
-
-.modal .alert-info {
-    background: linear-gradient(45deg, #17a2b8, #20c997);
-    color: white;
-}
-
-/* Responsividade dos modais */
+/* Responsividade */
 @media (max-width: 768px) {
-    .modal-body {
-        padding: 1rem;
+    .steps-container {
+        flex-direction: column;
+        gap: 1.5rem;
     }
     
-    .modal-header {
-        padding: 1rem;
+    .step-arrow {
+        transform: rotate(90deg);
     }
     
-    .modal-footer {
-        padding: 1rem;
+    .json-types-grid {
+        grid-template-columns: 1fr;
     }
-    
-    .json-example {
-        padding: 1rem;
-        font-size: 0.9rem;
-    }
-}
-
-/* Melhorias na acessibilidade */
-.modal-dialog:focus {
-    outline: none;
-}
-
-.modal .btn:focus {
-    box-shadow: 0 0 0 0.2rem rgba(0, 82, 136, 0.25);
 }
 </style>
 

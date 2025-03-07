@@ -605,11 +605,17 @@
                             <h5>Sobre o SpaceX Explorer</h5>
                             <p class="footer-text">Uma plataforma dedicada a explorar e apresentar dados da SpaceX, trazendo informações sobre lançamentos, foguetes e missões espaciais.</p>
                             <div class="social-links mt-3">
-                                <a href="https://github.com/r-spacex/SpaceX-API" target="_blank" class="social-link">
+                                <a href="https://github.com/r-spacex/SpaceX-API" target="_blank" class="social-link" data-bs-toggle="tooltip" data-bs-placement="top" title="API SpaceX">
                                     <i class="fab fa-github"></i>
                                 </a>
-                                <a href="https://www.spacex.com/" target="_blank" class="social-link">
+                                <a href="https://www.spacex.com/" target="_blank" class="social-link" data-bs-toggle="tooltip" data-bs-placement="top" title="Site Oficial SpaceX">
                                     <i class="fas fa-rocket"></i>
+                                </a>
+                                <a href="https://github.com/marcelitos1v9/spacex-explorer" target="_blank" class="social-link github-repo" data-bs-toggle="tooltip" data-bs-placement="top" title="Repositório do Projeto">
+                                    <i class="fas fa-code-branch"></i>
+                                </a>
+                                <a href="https://www.linkedin.com/in/marcelo-augusto-oo/" target="_blank" class="social-link linkedin" data-bs-toggle="tooltip" data-bs-placement="top" title="LinkedIn do Desenvolvedor">
+                                    <i class="fab fa-linkedin-in"></i>
                                 </a>
                             </div>
                         </div>
@@ -633,7 +639,29 @@
                             <ul class="footer-links">
                                 <li><a href="https://www.spacex.com/" target="_blank">Site Oficial SpaceX</a></li>
                                 <li><a href="https://github.com/r-spacex/SpaceX-API" target="_blank">SpaceX API</a></li>
+                                <li><a href="{{url_for('custom_data_page')}}"><i class="fas fa-database me-2"></i>Dados Personalizados</a></li>
                             </ul>
+                        </div>
+                        <div class="footer-section mt-4">
+                            <h5>Desenvolvido por</h5>
+                            <div class="developer-info">
+                                <div class="d-flex align-items-center">
+                                    <div class="dev-avatar">
+                                        <i class="fas fa-user-astronaut"></i>
+                                    </div>
+                                    <div class="dev-details ms-3">
+                                        <p class="mb-1 fw-bold">Marcelo Augusto</p>
+                                        <div class="dev-links">
+                                            <a href="https://github.com/marcelitos1v9/spacex-explorer" target="_blank" class="dev-link" data-bs-toggle="tooltip" data-bs-placement="top" title="GitHub">
+                                                <i class="fab fa-github"></i>
+                                            </a>
+                                            <a href="https://www.linkedin.com/in/marcelo-augusto-oo/" target="_blank" class="dev-link" data-bs-toggle="tooltip" data-bs-placement="top" title="LinkedIn">
+                                                <i class="fab fa-linkedin-in"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -654,7 +682,111 @@
         </div>
     </footer>
 
+    <!-- Estilos adicionais para os novos elementos do footer -->
+    <style>
+    /* Estilos para os ícones de redes sociais */
+    .social-links {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .social-link {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .social-link::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(0,0,0,0.1), rgba(255,255,255,0.1));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .social-link:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .social-link:hover::before {
+        opacity: 1;
+    }
+
+    /* Cores específicas para cada rede social */
+    .social-link.github-repo {
+        background: linear-gradient(45deg, #333, #555);
+    }
+
+    .social-link.linkedin {
+        background: linear-gradient(45deg, #0077B5, #00A0DC);
+    }
+
+    /* Informações do desenvolvedor */
+    .developer-info {
+        background: rgba(255,255,255,0.05);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .dev-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #005288, #0077cc);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: white;
+    }
+
+    .dev-details {
+        color: rgba(255,255,255,0.9);
+    }
+
+    .dev-links {
+        display: flex;
+        gap: 0.8rem;
+    }
+
+    .dev-link {
+        color: rgba(255,255,255,0.7);
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+    }
+
+    .dev-link:hover {
+        color: #00aaff;
+        transform: translateY(-2px);
+    }
+    </style>
+
     <!-- Scripts do Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    <script>
+    // Inicializar tooltips no footer
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    });
+    </script>
 </body>
 </html>
