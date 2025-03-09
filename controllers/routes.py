@@ -16,6 +16,19 @@ gamelist = [{"Titulo": "CS-GO",
 custom_list = []
 custom_dict = []
 
+def get_valid_image_url(url):
+    """
+    Verifica se a URL da imagem é válida e retorna uma URL padrão caso não seja.
+    """
+    if not url:
+        return url_for('static', filename='images/placeholder.jpg')
+    
+    # Verifica se a URL começa com http ou https
+    if not url.startswith(('http://', 'https://')):
+        return f"https://{url}"
+    
+    return url
+
 def init_app(app):
     @app.route('/')
     def home():
@@ -65,6 +78,14 @@ def init_app(app):
         start_idx = (page - 1) * items_per_page
         end_idx = start_idx + items_per_page
         current_launches = filtered_launches[start_idx:end_idx]
+        
+        # Verifica e corrige URLs de imagens para cada lançamento
+        for launch in current_launches:
+            if 'links' in launch and 'patch' in launch['links']:
+                if 'small' in launch['links']['patch']:
+                    launch['links']['patch']['small'] = get_valid_image_url(launch['links']['patch']['small'])
+                if 'large' in launch['links']['patch']:
+                    launch['links']['patch']['large'] = get_valid_image_url(launch['links']['patch']['large'])
         
         return render_template(
             'launches.html',
@@ -142,10 +163,35 @@ def init_app(app):
 
     @app.route('/launch/<launch_id>')
     def launch_detail(launch_id):
-        year = datetime.now().year
-        response = requests.get(f'https://api.spacexdata.com/v5/launches/{launch_id}')
-        launch = response.json()
-        return render_template('launch_detail.html', year=year, launch=launch)
+        try:
+            response = requests.get(f"https://api.spacexdata.com/v4/launches/{launch_id}")
+            
+            if response.status_code == 200:
+                try:
+                    launch = response.json()
+                    
+                    # Corrige URLs de imagens
+                    if 'links' in launch and 'patch' in launch['links']:
+                        if 'small' in launch['links']['patch']:
+                            launch['links']['patch']['small'] = get_valid_image_url(launch['links']['patch']['small'])
+                        if 'large' in launch['links']['patch']:
+                            launch['links']['patch']['large'] = get_valid_image_url(launch['links']['patch']['large'])
+                    
+                    # Corrige URLs de imagens de fotos do lançamento
+                    if 'links' in launch and 'flickr' in launch['links']:
+                        if 'original' in launch['links']['flickr']:
+                            launch['links']['flickr']['original'] = [
+                                get_valid_image_url(img) for img in launch['links']['flickr']['original']
+                            ]
+                    
+                    return render_template("launch_detail.html", launch=launch)
+                except requests.exceptions.JSONDecodeError:
+                    return render_template("error.html", message="Erro ao processar dados do lançamento. Resposta inválida da API.")
+            else:
+                return render_template("error.html", message=f"Erro ao buscar dados do lançamento. Código de status: {response.status_code}")
+        
+        except Exception as e:
+            return render_template("error.html", message=f"Ocorreu um erro: {str(e)}")
 
     @app.route('/rocket/<rocket_id>')
     def rocket_detail(rocket_id):
