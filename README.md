@@ -73,6 +73,8 @@ O SpaceX Explorer é uma aplicação web desenvolvida em Flask que permite aos u
 
 ## Como Executar
 
+### Opção 1: Ambiente Virtual Python
+
 1. Clone o repositório:
 ```bash
 git clone https://github.com/marcelitos1v9/spacex-explorer
@@ -81,9 +83,18 @@ cd spacex-explorer
 
 2. Crie e ative um ambiente virtual (opcional, mas recomendado):
 ```bash
+# Criar o ambiente virtual
 python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
+
+# Ativar o ambiente virtual
+# Para Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+
+# Para Windows (Command Prompt - CMD):
+venv\Scripts\activate.bat
+
+# Para Linux/Mac:
+source venv/bin/activate
 ```
 
 3. Instale as dependências:
@@ -101,41 +112,40 @@ python app.py
 http://localhost:5000
 ```
 
+6. Para desativar o ambiente virtual quando terminar:
+```bash
+deactivate
+```
+
+**Nota**: Se estiver usando Windows e encontrar problemas de permissão no PowerShell, execute o seguinte comando como administrador:
+```powershell
+Set-ExecutionPolicy RemoteSigned
+```
+
+### Opção 2: Docker Compose
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/marcelitos1v9/spacex-explorer
+cd spacex-explorer
+```
+
+2. Certifique-se de que o Docker e o Docker Compose estão instalados no seu sistema.
+
+3. Execute a aplicação com Docker Compose:
+```bash
+docker-compose up --build
+```
+
+4. Acesse a aplicação em seu navegador:
+```
+http://localhost:5000
+```
+
+5. Para parar a aplicação, pressione `Ctrl+C` no terminal ou execute em outro terminal:
+```bash
+docker-compose down
+```
+
 ## Estrutura do Projeto
 ```
-spacex-explorer/
-├── app.py                 # Arquivo principal da aplicação
-├── requirements.txt       # Dependências do projeto
-├── controllers/          
-│   └── routes.py         # Rotas e lógica da aplicação
-├── static/
-│   ├── css/              # Arquivos CSS
-│   ├── js/               # Arquivos JavaScript
-│   └── imgs/             # Imagens e recursos
-└── templates/            # Templates HTML
-    ├── base.html         # Template base
-    ├── index.html        # Página inicial
-    ├── launches.html     # Página de lançamentos
-    ├── rockets.html      # Página de foguetes
-    ├── crew.html         # Página da tripulação
-    ├── landpads.html     # Página de áreas de pouso
-    └── custom_data.html  # Página de dados personalizados
-```
-
-## Contribuindo
-
-1. Faça um Fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
-## Agradecimentos
-
-- [SpaceX API](https://github.com/r-spacex/SpaceX-API)
-- [Bootstrap](https://getbootstrap.com)
-- [Font Awesome](https://fontawesome.com)
