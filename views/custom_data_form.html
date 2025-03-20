@@ -89,9 +89,36 @@
                                     <option value="Estudo" {{ 'selected' if dado and dado.tipo == 'Estudo' else '' }}>
                                         <i class="fas fa-graduation-cap me-2"></i>Estudo
                                     </option>
+                                    <option value="Projeto" {{ 'selected' if dado and dado.tipo == 'Projeto' else '' }}>
+                                        <i class="fas fa-project-diagram me-2"></i>Projeto
+                                    </option>
+                                    <option value="Financeiro" {{ 'selected' if dado and dado.tipo == 'Financeiro' else '' }}>
+                                        <i class="fas fa-dollar-sign me-2"></i>Financeiro
+                                    </option>
+                                    <option value="Saúde" {{ 'selected' if dado and dado.tipo == 'Saúde' else '' }}>
+                                        <i class="fas fa-heartbeat me-2"></i>Saúde
+                                    </option>
+                                    <option value="Viagem" {{ 'selected' if dado and dado.tipo == 'Viagem' else '' }}>
+                                        <i class="fas fa-plane me-2"></i>Viagem
+                                    </option>
+                                    <option value="Evento" {{ 'selected' if dado and dado.tipo == 'Evento' else '' }}>
+                                        <i class="fas fa-calendar-alt me-2"></i>Evento
+                                    </option>
+                                    <option value="Tecnologia" {{ 'selected' if dado and dado.tipo == 'Tecnologia' else '' }}>
+                                        <i class="fas fa-laptop-code me-2"></i>Tecnologia
+                                    </option>
+                                    <option value="Lembrete" {{ 'selected' if dado and dado.tipo == 'Lembrete' else '' }}>
+                                        <i class="fas fa-bell me-2"></i>Lembrete
+                                    </option>
+                                    <option value="Documento" {{ 'selected' if dado and dado.tipo == 'Documento' else '' }}>
+                                        <i class="fas fa-file-alt me-2"></i>Documento
+                                    </option>
+                                    <option value="Outro" {{ 'selected' if dado and dado.tipo == 'Outro' else '' }}>
+                                        <i class="fas fa-ellipsis-h me-2"></i>Outro
+                                    </option>
                                 </select>
                             </div>
-                            <div class="form-text">Escolha a categoria que melhor se aplica</div>
+                            <div class="form-text">Escolha a categoria que melhor se aplica ao seu registro</div>
                         </div>
                         
                         <!-- Campo Descrição -->
