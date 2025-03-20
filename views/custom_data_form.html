@@ -1,0 +1,394 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header Card -->
+            <div class="header-card mb-4">
+                <h1 class="text-center mb-3">
+                    <i class="fas fa-{{ 'edit' if dado else 'plus-circle' }} me-2"></i>
+                    {{ 'Editar Registro' if dado else 'Novo Registro' }}
+                </h1>
+                <p class="text-center text-white mb-4">
+                    {{ 'Atualize as informações do seu registro' if dado else 'Adicione um novo registro ao seu banco de dados' }}
+                </p>
+
+                <!-- Indicador de Progresso -->
+                <div class="progress-steps">
+                    <div class="progress-step active">
+                        <div class="step-indicator">1</div>
+                        <span>Informações Básicas</span>
+                    </div>
+                    <div class="progress-line"></div>
+                    <div class="progress-step">
+                        <div class="step-indicator">2</div>
+                        <span>Detalhes</span>
+                    </div>
+                    <div class="progress-line"></div>
+                    <div class="progress-step">
+                        <div class="step-indicator">3</div>
+                        <span>Confirmação</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulário -->
+            <div class="form-container">
+                <form method="POST" class="needs-validation" novalidate>
+                    <!-- Seção: Informações Básicas -->
+                    <div class="form-section active">
+                        <div class="section-header mb-4">
+                            <h4 class="section-title">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Informações Básicas
+                            </h4>
+                            <p class="section-description">
+                                Preencha as informações principais do seu registro
+                            </p>
+                        </div>
+
+                        <!-- Campo Título -->
+                        <div class="form-group mb-4">
+                            <label for="titulo" class="form-label">Título do Registro</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-heading"></i>
+                                </span>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="titulo" 
+                                       name="titulo" 
+                                       value="{{ dado.titulo if dado else '' }}"
+                                       placeholder="Digite um título descritivo"
+                                       required>
+                            </div>
+                            <div class="form-text">O título deve ser claro e objetivo</div>
+                        </div>
+                        
+                        <!-- Campo Tipo -->
+                        <div class="form-group mb-4">
+                            <label for="tipo" class="form-label">Tipo de Registro</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-tag"></i>
+                                </span>
+                                <select class="form-select" 
+                                        id="tipo" 
+                                        name="tipo" 
+                                        required>
+                                    <option value="" disabled {{ 'selected' if not dado else '' }}>
+                                        Selecione um tipo...
+                                    </option>
+                                    <option value="Pessoal" {{ 'selected' if dado and dado.tipo == 'Pessoal' else '' }}>
+                                        <i class="fas fa-user me-2"></i>Pessoal
+                                    </option>
+                                    <option value="Trabalho" {{ 'selected' if dado and dado.tipo == 'Trabalho' else '' }}>
+                                        <i class="fas fa-briefcase me-2"></i>Trabalho
+                                    </option>
+                                    <option value="Estudo" {{ 'selected' if dado and dado.tipo == 'Estudo' else '' }}>
+                                        <i class="fas fa-graduation-cap me-2"></i>Estudo
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-text">Escolha a categoria que melhor se aplica</div>
+                        </div>
+                        
+                        <!-- Campo Descrição -->
+                        <div class="form-group mb-4">
+                            <label for="descricao" class="form-label">Descrição</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-align-left"></i>
+                                </span>
+                                <textarea class="form-control" 
+                                          id="descricao" 
+                                          name="descricao" 
+                                          rows="4"
+                                          placeholder="Adicione uma descrição detalhada">{{ dado.descricao if dado else '' }}</textarea>
+                            </div>
+                            <div class="form-text">Forneça detalhes adicionais (opcional)</div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="form-actions">
+                        <a href="{{ url_for('custom_data_page') }}" 
+                           class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Voltar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-{{ 'save' if dado else 'plus-circle' }} me-2"></i>
+                            {{ 'Salvar Alterações' if dado else 'Criar Registro' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos Base */
+:root {
+    --primary-color: #005288;
+    --primary-dark: #003366;
+    --primary-light: #0077cc;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #0dcaf0;
+    --white: #ffffff;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-400: #ced4da;
+    --gray-500: #adb5bd;
+    --gray-600: #6c757d;
+    --gray-700: #495057;
+    --gray-800: #343a40;
+    --gray-900: #212529;
+}
+
+/* Header Card */
+.header-card {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    padding: 2.5rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.header-card h1 {
+    color: var(--white);
+    font-size: 2.2rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress Steps */
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding: 0 1rem;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.step-indicator {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.progress-step.active .step-indicator {
+    background: var(--white);
+    color: var(--primary-color);
+    border-color: var(--white);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+.progress-step span {
+    color: var(--white);
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.progress-line {
+    flex: 1;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 1rem;
+}
+
+/* Form Container */
+.form-container {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    margin-top: -20px;
+}
+
+/* Section Header */
+.section-header {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    color: var(--gray-800);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.section-description {
+    color: var(--gray-600);
+    margin-bottom: 0;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+}
+
+.input-group {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.input-group-text {
+    background: var(--gray-100);
+    border: 1px solid var(--gray-300);
+    color: var(--gray-600);
+    padding: 0.75rem 1rem;
+}
+
+.form-control, .form-select {
+    border: 1px solid var(--gray-300);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(0, 82, 136, 0.1);
+}
+
+.form-text {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-200);
+}
+
+/* Buttons */
+.btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-light));
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 82, 136, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 82, 136, 0.3);
+}
+
+.btn-outline-secondary {
+    border: 2px solid var(--gray-400);
+    color: var(--gray-600);
+}
+
+.btn-outline-secondary:hover {
+    background: var(--gray-600);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .header-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .progress-steps {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .progress-line {
+        width: 2px;
+        height: 20px;
+        margin: 0.5rem 0;
+    }
+
+    .form-container {
+        padding: 1.5rem;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        gap: 1rem;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+// Validação do Formulário
+(function () {
+    'use strict'
+    
+    const forms = document.querySelectorAll('.needs-validation')
+    
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+
+// Animação dos campos
+document.querySelectorAll('.form-control, .form-select').forEach(input => {
+    input.addEventListener('focus', () => {
+        input.closest('.form-group').classList.add('focused')
+    })
+    
+    input.addEventListener('blur', () => {
+        input.closest('.form-group').classList.remove('focused')
+    })
+})
+</script>
+{% endblock %} 

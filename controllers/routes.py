@@ -3,6 +3,7 @@ import urllib
 import json
 from datetime import datetime
 import requests
+from models.custom_data import db, CustomList, CustomDict, CustomData
 
 jogadores = []
 gamelist = [{"Titulo": "CS-GO",
@@ -30,6 +31,14 @@ def get_valid_image_url(url):
     return url
 
 def init_app(app):
+    # Configuração do SQLite
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///custom_data.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
+    
+    with app.app_context():
+        db.create_all()
+
     @app.route('/')
     def home():
         year = datetime.now().year
@@ -251,78 +260,58 @@ def init_app(app):
             status=status
         )
 
-    @app.route('/custom-data', methods=['GET', 'POST'])
+    @app.route('/custom-data')
     def custom_data_page():
-        year = datetime.now().year
-        message = None
+        page = request.args.get('page', 1, type=int)
+        per_page = 10  # itens por página
         
+        # Busca dados com paginação
+        pagination = CustomData.query.order_by(CustomData.data_criacao.desc()).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
+        
+        # Estatísticas
+        total_registros = CustomData.query.count()
+        ultima_atualizacao = CustomData.query.order_by(CustomData.data_atualizacao.desc()).first()
+        total_categorias = db.session.query(CustomData.tipo.distinct()).count()
+        
+        return render_template('custom_data.html',
+                             dados=pagination.items,
+                             page=page,
+                             total_pages=pagination.pages,
+                             has_next=pagination.has_next,
+                             has_prev=pagination.has_prev,
+                             total_registros=total_registros,
+                             ultima_atualizacao=ultima_atualizacao.data_atualizacao if ultima_atualizacao else None,
+                             total_categorias=total_categorias)
+
+    @app.route('/custom-data/novo', methods=['GET', 'POST'])
+    def novo_dado():
         if request.method == 'POST':
-            if 'list_item' in request.form:
-                # Adiciona item à lista
-                item = request.form.get('list_item')
-                if item:
-                    custom_list.append(item)
-                    message = {'type': 'success', 'text': 'Item adicionado à lista com sucesso!'}
-            
-            elif 'json_data' in request.form:
-                try:
-                    # Adiciona dicionário
-                    json_data = request.form.get('json_data')
-                    data_dict = json.loads(json_data)
-                    custom_dict.append(data_dict)
-                    message = {'type': 'success', 'text': 'Dicionário adicionado com sucesso!'}
-                except json.JSONDecodeError:
-                    message = {'type': 'danger', 'text': 'Erro: JSON inválido'}
-                except Exception as e:
-                    message = {'type': 'danger', 'text': f'Erro: {str(e)}'}
-            
-            # Tratamento para edição de itens
-            elif 'edit_type' in request.form and 'edit_index' in request.form and 'edit_value' in request.form:
-                edit_type = request.form.get('edit_type')
-                try:
-                    index = int(request.form.get('edit_index'))
-                    value = request.form.get('edit_value')
-                    
-                    if edit_type == 'list':
-                        if 0 <= index < len(custom_list):
-                            custom_list[index] = value
-                            message = {'type': 'success', 'text': 'Item atualizado com sucesso!'}
-                        else:
-                            message = {'type': 'danger', 'text': 'Índice inválido'}
-                    
-                    elif edit_type == 'dict':
-                        if 0 <= index < len(custom_dict):
-                            try:
-                                custom_dict[index] = json.loads(value)
-                                message = {'type': 'success', 'text': 'Dicionário atualizado com sucesso!'}
-                            except json.JSONDecodeError:
-                                message = {'type': 'danger', 'text': 'Erro: JSON inválido'}
-                        else:
-                            message = {'type': 'danger', 'text': 'Índice inválido'}
-                except ValueError:
-                    message = {'type': 'danger', 'text': 'Erro ao processar o índice'}
-        
-        return render_template('custom_data.html', 
-                             year=year, 
-                             custom_list=custom_list,
-                             custom_dict=custom_dict,
-                             message=message)
+            novo = CustomData(
+                titulo=request.form['titulo'],
+                descricao=request.form['descricao'],
+                tipo=request.form['tipo']
+            )
+            db.session.add(novo)
+            db.session.commit()
+            return redirect(url_for('custom_data_page'))
+        return render_template('custom_data_form.html')
 
-    @app.route('/custom-data/clear/<data_type>', methods=['POST'])
-    def clear_custom_data(data_type):
-        if data_type == 'list':
-            custom_list.clear()
-        elif data_type == 'dict':
-            custom_dict.clear()
-        return redirect(url_for('custom_data_page'))
+    @app.route('/custom-data/editar/<int:id>', methods=['GET', 'POST'])
+    def editar_dado(id):
+        dado = CustomData.query.get_or_404(id)
+        if request.method == 'POST':
+            dado.titulo = request.form['titulo']
+            dado.descricao = request.form['descricao']
+            dado.tipo = request.form['tipo']
+            db.session.commit()
+            return redirect(url_for('custom_data_page'))
+        return render_template('custom_data_form.html', dado=dado)
 
-    @app.route('/custom-data/remove/<data_type>/<int:index>')
-    def remove_item(data_type, index):
-        try:
-            if data_type == 'list':
-                custom_list.pop(index)
-            elif data_type == 'dict':
-                custom_dict.pop(index)
-        except IndexError:
-            pass
+    @app.route('/custom-data/deletar/<int:id>')
+    def deletar_dado(id):
+        dado = CustomData.query.get_or_404(id)
+        db.session.delete(dado)
+        db.session.commit()
         return redirect(url_for('custom_data_page'))

@@ -12,36 +12,53 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="header-card">
-                <h1 class="text-center mb-3">Gerenciador de Dados Personalizados</h1>
-                <p class="text-center text-white mb-4">Adicione, visualize e gerencie seus dados personalizados de forma simples e eficiente.</p>
+                <h1 class="text-center mb-3">
+                    <i class="fas fa-database me-2"></i>Gerenciador de Dados
+                </h1>
+                <p class="text-center text-white mb-4">Gerencie seus dados de forma simples e eficiente</p>
                 
                 <!-- Guia rápido com passos numerados -->
                 <div class="steps-container">
                     <div class="step-item">
-                        <div class="step-number">1</div>
+                        <div class="step-icon">
+                            <div class="icon-circle">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <div class="icon-glow"></div>
+                        </div>
                         <div class="step-content">
-                            <h5>Escolha o tipo de dado</h5>
-                            <p>Lista simples ou dicionário JSON</p>
+                            <h5>Comece sua Jornada</h5>
+                            <p>Adicione e gerencie seus dados</p>
                         </div>
                     </div>
                     <div class="step-arrow">
-                        <i class="fas fa-chevron-right"></i>
+                        <i class="fas fa-star"></i>
                     </div>
                     <div class="step-item">
-                        <div class="step-number">2</div>
+                        <div class="step-icon">
+                            <div class="icon-circle">
+                                <i class="fas fa-satellite"></i>
+                            </div>
+                            <div class="icon-glow"></div>
+                        </div>
                         <div class="step-content">
-                            <h5>Adicione seus dados</h5>
-                            <p>Digite texto ou use modelos JSON</p>
+                            <h5>Missão de Controle</h5>
+                            <p>Visualize e edite facilmente</p>
                         </div>
                     </div>
                     <div class="step-arrow">
-                        <i class="fas fa-chevron-right"></i>
+                        <i class="fas fa-star"></i>
                     </div>
                     <div class="step-item">
-                        <div class="step-number">3</div>
+                        <div class="step-icon">
+                            <div class="icon-circle">
+                                <i class="fas fa-solar-system"></i>
+                            </div>
+                            <div class="icon-glow"></div>
+                        </div>
                         <div class="step-content">
-                            <h5>Gerencie seus dados</h5>
-                            <p>Edite, remova ou limpe dados</p>
+                            <h5>Explore o Universo</h5>
+                            <p>Descubra seus dados rapidamente</p>
                         </div>
                     </div>
                 </div>
@@ -50,248 +67,218 @@
     </div>
 
     <div class="row g-4">
-        <!-- Seção de Lista -->
-        <div class="col-md-6">
-            <div class="custom-card h-100">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="mb-0">
-                            <i class="fas fa-list me-2"></i>Lista Simples
-                            <span class="badge bg-info ms-2">Texto</span>
-                        </h2>
-                        <form method="POST" action="{{ url_for('clear_custom_data', data_type='list') }}" class="d-inline">
-                            <button type="submit" class="btn btn-danger btn-sm" 
-                                    data-bs-toggle="tooltip"
-                                    data-bs-placement="left"
-                                    title="Remove todos os itens da lista"
-                                    data-confirm="Tem certeza que deseja limpar toda a lista?">
-                                <i class="fas fa-trash-alt me-2"></i>Limpar Lista
-                            </button>
-                        </form>
-                    </div>
-                </div>
+        <!-- Filtros e Ações -->
+        <div class="col-12">
+            <div class="custom-card">
                 <div class="card-body">
-                    <!-- Instruções claras -->
-                    <div class="instructions-box mb-3">
-                        <div class="instructions-icon">
-                            <i class="fas fa-info-circle"></i>
-                        </div>
-                        <div class="instructions-text">
-                            <h6>Como usar a Lista Simples:</h6>
-                            <p>Digite qualquer texto no campo abaixo e clique em "Adicionar" para incluir na lista. 
-                               Você pode editar ou remover itens a qualquer momento.</p>
-                        </div>
-                    </div>
-
-                    <!-- Formulário de Lista -->
-                    <form method="POST" class="mb-4">
-                        <label for="list_item" class="form-label">Digite um item para adicionar à lista:</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="list_item" name="list_item" 
-                                   placeholder="Ex: Comprar leite, Ligar para João..." 
-                                   required>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-plus-circle me-2"></i>Adicionar
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- Lista de Itens -->
-                    {% if custom_list %}
-                    <div class="data-section">
-                        <div class="section-header">
-                            <h5><i class="fas fa-clipboard-list me-2"></i>Seus Itens</h5>
-                            <span class="badge bg-primary">{{ custom_list|length }} item(s)</span>
-                        </div>
-                        
-                        <div class="list-group list-group-flush custom-list">
-                            {% for item in custom_list %}
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <span class="item-text">{{ item }}</span>
-                                <div class="btn-group action-buttons">
-                                    <button class="btn btn-outline-primary btn-sm edit-item" 
-                                            data-item="{{ item }}" 
-                                            data-index="{{ loop.index0 }}"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="top"
-                                            title="Editar este item">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <a href="{{ url_for('remove_item', data_type='list', index=loop.index0) }}" 
-                                       class="btn btn-outline-danger btn-sm"
-                                       data-bs-toggle="tooltip"
-                                       data-bs-placement="top"
-                                       title="Remover este item"
-                                       data-confirm="Tem certeza que deseja remover este item?">
-                                        <i class="fas fa-times"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="empty-state">
-                        <i class="fas fa-list fa-3x mb-3"></i>
-                        <p>Nenhum item na lista ainda.</p>
-                        <p class="small">Adicione itens usando o formulário acima.</p>
-                        <button class="btn btn-outline-primary btn-sm mt-2" 
-                                onclick="document.querySelector('[name=list_item]').focus()">
-                            <i class="fas fa-plus-circle me-2"></i>Começar a Adicionar
-                        </button>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <!-- Seção de Dicionário -->
-        <div class="col-md-6">
-            <div class="custom-card h-100">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="mb-0">
-                            <i class="fas fa-code me-2"></i>Dicionário de Dados
-                            <span class="badge bg-warning ms-2">JSON</span>
-                        </h2>
-                        <form method="POST" action="{{ url_for('clear_custom_data', data_type='dict') }}" class="d-inline">
-                            <button type="submit" class="btn btn-danger btn-sm"
-                                    data-bs-toggle="tooltip"
-                                    data-bs-placement="left"
-                                    title="Remove todos os dados do dicionário"
-                                    data-confirm="Tem certeza que deseja limpar todo o dicionário?">
-                                <i class="fas fa-trash-alt me-2"></i>Limpar Dicionário
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <!-- Instruções claras -->
-                    <div class="instructions-box mb-3">
-                        <div class="instructions-icon">
-                            <i class="fas fa-info-circle"></i>
-                        </div>
-                        <div class="instructions-text">
-                            <h6>Como usar o Dicionário JSON:</h6>
-                            <p>Use os modelos predefinidos ou crie seu próprio JSON. Não sabe o que é JSON? 
-                               <button type="button" class="btn btn-link btn-sm p-0 text-info" 
-                                       data-bs-toggle="modal" 
-                                       data-bs-target="#jsonHelpModal">
-                                   Clique aqui para aprender
-                               </button>
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Formulário de Dicionário -->
-                    <form method="POST" class="mb-4" id="jsonForm">
-                        <div class="mb-3">
-                            <label class="form-label">Selecione um modelo ou crie seu próprio JSON:</label>
-                            <div class="d-flex gap-2 mb-3">
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" 
-                                            type="button" 
-                                            data-bs-toggle="dropdown">
-                                        <i class="fas fa-file-code me-1"></i> Modelos Prontos
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#" onclick="setTemplate('pessoa')">
-                                            <i class="fas fa-user me-2"></i>Pessoa
-                                        </a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="setTemplate('produto')">
-                                            <i class="fas fa-box me-2"></i>Produto
-                                        </a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="setTemplate('evento')">
-                                            <i class="fas fa-calendar me-2"></i>Evento
-                                        </a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="#" onclick="setTemplate('astronauta')">
-                                            <i class="fas fa-user-astronaut me-2"></i>Astronauta
-                                        </a></li>
-                                    </ul>
-                                </div>
-                                <button type="button" 
-                                        class="btn btn-outline-secondary" 
-                                        onclick="formatJson()">
-                                        <i class="fas fa-align-left me-1"></i> Formatar JSON
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" 
+                                       class="form-control" 
+                                       placeholder="Buscar dados..." 
+                                       id="searchInput">
+                                <select class="form-select" style="max-width: 150px;" id="filterTipo">
+                                    <option value="">Todos os tipos</option>
+                                    <option value="Pessoal">Pessoal</option>
+                                    <option value="Trabalho">Trabalho</option>
+                                    <option value="Estudo">Estudo</option>
+                                </select>
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fas fa-search me-2"></i>Buscar
                                 </button>
                             </div>
-                            <textarea class="form-control code-editor" 
-                                     id="json_data" 
-                                     name="json_data" 
-                                     rows="8" 
-                                     required
-                                     placeholder="Digite ou cole seu JSON aqui..."></textarea>
-                            <div id="jsonValidationMessage" class="form-text mt-1"></div>
-                            <div class="json-tips mt-2 small text-muted">
-                                <i class="fas fa-lightbulb me-1"></i> Dica: Selecione um modelo acima ou cole seu próprio JSON
-                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="submitJsonBtn" disabled>
-                            <i class="fas fa-plus-circle me-2"></i>Adicionar ao Dicionário
-                        </button>
-                    </form>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <a href="{{ url_for('novo_dado') }}" class="btn btn-primary">
+                                <i class="fas fa-plus-circle me-2"></i>Novo Dado
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    <!-- Tabela de Dicionários -->
-                    {% if custom_dict %}
-                    <div class="data-section">
-                        <div class="section-header">
-                            <h5><i class="fas fa-database me-2"></i>Seus Dados JSON</h5>
-                            <span class="badge bg-primary">{{ custom_dict|length }} item(s)</span>
-                        </div>
-                        
-                        <div class="table-responsive custom-table">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Dados</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for item in custom_dict %}
-                                    <tr>
-                                        <td>{{ loop.index }}</td>
-                                        <td>
-                                            <pre class="mb-0 json-display"><code>{{ item | tojson(indent=2) }}</code></pre>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <button class="btn btn-outline-primary btn-sm edit-json" 
-                                                        data-json='{{ item | tojson }}' 
-                                                        data-index="{{ loop.index0 }}"
-                                                        data-bs-toggle="tooltip"
-                                                        data-bs-placement="top"
-                                                        title="Editar este item">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <a href="{{ url_for('remove_item', data_type='dict', index=loop.index0) }}" 
-                                                   class="btn btn-outline-danger btn-sm"
-                                                   data-bs-toggle="tooltip"
-                                                   data-bs-placement="top"
-                                                   title="Remover este item"
-                                                   data-confirm="Tem certeza que deseja remover este item?">
-                                                    <i class="fas fa-times"></i>
-                                                </a>
+        <!-- Tabela de Dados -->
+        <div class="col-12">
+            <div class="custom-card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">
+                            <i class="fas fa-table me-2"></i>Seus Dados
+                            <span class="badge bg-primary ms-2">{{ dados|length }} item(s)</span>
+                        </h2>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if dados %}
+                    <div class="table-responsive custom-table">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Tipo</th>
+                                    <th>Data Criação</th>
+                                    <th>Última Atualização</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for dado in dados %}
+                                <tr>
+                                    <td>{{ dado.titulo }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 
+                                            'info' if dado.tipo == 'Pessoal' else 
+                                            'success' if dado.tipo == 'Trabalho' else 
+                                            'warning' }}">
+                                            {{ dado.tipo }}
+                                        </span>
+                                    </td>
+                                    <td>{{ dado.data_criacao.strftime('%d/%m/%Y %H:%M') }}</td>
+                                    <td>{{ dado.data_atualizacao.strftime('%d/%m/%Y %H:%M') }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-outline-primary btn-sm" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#viewModal{{ dado.id }}"
+                                                    data-bs-tooltip="tooltip"
+                                                    title="Visualizar">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <a href="{{ url_for('editar_dado', id=dado.id) }}" 
+                                               class="btn btn-outline-warning btn-sm"
+                                               data-bs-tooltip="tooltip"
+                                               title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button class="btn btn-outline-danger btn-sm"
+                                                    onclick="confirmarDelecao({{ dado.id }})"
+                                                    data-bs-tooltip="tooltip"
+                                                    title="Excluir">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Modal de Visualização -->
+                                <div class="modal fade" id="viewModal{{ dado.id }}" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">
+                                                    <i class="fas fa-file-alt me-2"></i>{{ dado.titulo }}
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="fw-bold">Tipo:</label>
+                                                    <span class="badge bg-{{ 
+                                                        'info' if dado.tipo == 'Pessoal' else 
+                                                        'success' if dado.tipo == 'Trabalho' else 
+                                                        'warning' }} ms-2">{{ dado.tipo }}</span>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="fw-bold">Descrição:</label>
+                                                    <p class="mt-2">{{ dado.descricao or 'Sem descrição' }}</p>
+                                                </div>
+                                                <div class="text-muted small">
+                                                    <p class="mb-1">
+                                                        <i class="fas fa-clock me-1"></i>
+                                                        Criado em: {{ dado.data_criacao.strftime('%d/%m/%Y %H:%M') }}
+                                                    </p>
+                                                    <p class="mb-0">
+                                                        <i class="fas fa-history me-1"></i>
+                                                        Última atualização: {{ dado.data_atualizacao.strftime('%d/%m/%Y %H:%M') }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a href="{{ url_for('editar_dado', id=dado.id) }}" 
+                                                   class="btn btn-warning">
+                                                    <i class="fas fa-edit me-2"></i>Editar
+                                                </a>
+                                                <button type="button" 
+                                                        class="btn btn-secondary" 
+                                                        data-bs-dismiss="modal">Fechar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Paginação -->
+                    <nav aria-label="Navegação de páginas">
+                        <ul class="pagination">
+                            <li class="page-item {% if not has_prev %}disabled{% endif %}">
+                                <a class="page-link" href="{{ url_for('custom_data_page', page=page-1) if has_prev else '#' }}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            {% for num in range(1, total_pages + 1) %}
+                            <li class="page-item {% if num == page %}active{% endif %}">
+                                <a class="page-link" href="{{ url_for('custom_data_page', page=num) }}">{{ num }}</a>
+                            </li>
+                            {% endfor %}
+                            <li class="page-item {% if not has_next %}disabled{% endif %}">
+                                <a class="page-link" href="{{ url_for('custom_data_page', page=page+1) if has_next else '#' }}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <!-- Estatísticas -->
+                    <div class="stats-container mt-4">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-database"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h6>Total de Registros</h6>
+                                        <h3>{{ total_registros }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h6>Última Atualização</h6>
+                                        <h3>{{ ultima_atualizacao.strftime('%d/%m/%Y') if ultima_atualizacao else 'N/A' }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-tags"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h6>Categorias</h6>
+                                        <h3>{{ total_categorias }}</h3>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     {% else %}
                     <div class="empty-state">
-                        <i class="fas fa-code fa-3x mb-3"></i>
-                        <p>Nenhum dicionário adicionado ainda.</p>
-                        <p class="small">Use os modelos ou adicione seu próprio JSON.</p>
-                        <div class="mt-3">
-                            <button class="btn btn-outline-primary btn-sm" onclick="setTemplate('pessoa')">
-                                <i class="fas fa-file-code me-2"></i>Usar Modelo de Exemplo
-                            </button>
-                        </div>
+                        <i class="fas fa-database fa-3x mb-3"></i>
+                        <p>Nenhum dado cadastrado ainda.</p>
+                        <p class="text-muted small">Comece adicionando seu primeiro registro!</p>
+                        <a href="{{ url_for('novo_dado') }}" class="btn btn-primary btn-sm mt-2">
+                            <i class="fas fa-plus-circle me-2"></i>Adicionar Primeiro Dado
+                        </a>
                     </div>
                     {% endif %}
                 </div>
@@ -300,914 +287,367 @@
     </div>
 </div>
 
-<!-- Modal de Ajuda JSON -->
-<div class="modal fade" id="jsonHelpModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-question-circle me-2"></i>
-                    O que é JSON e como usar?
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="json-help-content">
-                    <div class="help-section">
-                        <h6 class="mb-3">O que é JSON?</h6>
-                        <p>JSON (JavaScript Object Notation) é um formato leve de troca de dados. É fácil para humanos ler e escrever e fácil para máquinas analisar e gerar.</p>
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            JSON é usado para armazenar e transmitir dados estruturados, como informações de pessoas, produtos, eventos, etc.
-                        </div>
-                    </div>
-                    
-                    <div class="help-section">
-                        <h6 class="mb-3">Estrutura Básica</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="json-example-card">
-                                    <div class="card-header">Exemplo de JSON</div>
-                                    <pre class="json-example">
-{
-    "nome": "João Silva",
-    "idade": 30,
-    "email": "joao@email.com"
-}</pre>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="json-explanation">
-                                    <p><strong>Explicação:</strong></p>
-                                    <ul>
-                                        <li>Chaves <code>{}</code> delimitam um objeto</li>
-                                        <li>Dados são organizados em pares "chave": "valor"</li>
-                                        <li>Cada par é separado por vírgula</li>
-                                        <li>Chaves sempre são textos entre aspas duplas</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="help-section">
-                        <h6 class="mb-3">Tipos de Dados Suportados</h6>
-                        <div class="json-types-grid">
-                            <div class="json-type-card">
-                                <div class="type-name">Texto</div>
-                                <div class="type-example"><code>"Olá mundo"</code></div>
-                                <div class="type-desc">Textos entre aspas duplas</div>
-                            </div>
-                            <div class="json-type-card">
-                                <div class="type-name">Número</div>
-                                <div class="type-example"><code>42</code> ou <code>3.14</code></div>
-                                <div class="type-desc">Inteiros ou decimais</div>
-                            </div>
-                            <div class="json-type-card">
-                                <div class="type-name">Booleano</div>
-                                <div class="type-example"><code>true</code> ou <code>false</code></div>
-                                <div class="type-desc">Valores verdadeiro/falso</div>
-                            </div>
-                            <div class="json-type-card">
-                                <div class="type-name">Nulo</div>
-                                <div class="type-example"><code>null</code></div>
-                                <div class="type-desc">Representa valor vazio</div>
-                            </div>
-                            <div class="json-type-card">
-                                <div class="type-name">Array</div>
-                                <div class="type-example"><code>["item1", "item2"]</code></div>
-                                <div class="type-desc">Lista de valores</div>
-                            </div>
-                            <div class="json-type-card">
-                                <div class="type-name">Objeto</div>
-                                <div class="type-example"><code>{"chave": "valor"}</code></div>
-                                <div class="type-desc">Conjunto de pares chave/valor</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="help-section">
-                        <h6 class="mb-3">Como usar nesta página</h6>
-                        <div class="steps">
-                            <div class="step">
-                                <div class="step-number">1</div>
-                                <div class="step-desc">Selecione um modelo pronto ou crie seu próprio JSON</div>
-                            </div>
-                            <div class="step">
-                                <div class="step-number">2</div>
-                                <div class="step-desc">Use o botão "Formatar JSON" para verificar se está válido</div>
-                            </div>
-                            <div class="step">
-                                <div class="step-number">3</div>
-                                <div class="step-desc">Clique em "Adicionar ao Dicionário" para salvar</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Entendi!</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal para edição de item da lista -->
-<div class="modal fade" id="editItemModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Editar Item</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="editItemForm" method="POST" action="{{ url_for('custom_data_page') }}">
-                <div class="modal-body">
-                    <input type="hidden" name="edit_type" value="list">
-                    <input type="hidden" name="edit_index" id="editItemIndex">
-                    <div class="mb-3">
-                        <label for="editItemValue" class="form-label">Item</label>
-                        <input type="text" class="form-control" id="editItemValue" name="edit_value" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal para edição de JSON -->
-<div class="modal fade" id="editJsonModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Editar JSON</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="editJsonForm" method="POST" action="{{ url_for('custom_data_page') }}">
-                <div class="modal-body">
-                    <input type="hidden" name="edit_type" value="dict">
-                    <input type="hidden" name="edit_index" id="editJsonIndex">
-                    <div class="mb-3">
-                        <button type="button" class="btn btn-outline-secondary btn-sm mb-2" onclick="formatEditJson()">
-                            <i class="fas fa-align-left me-1"></i> Formatar JSON
-                        </button>
-                        <textarea class="form-control code-editor" id="editJsonValue" name="edit_value" rows="10" required></textarea>
-                        <div id="editJsonValidationMessage" class="form-text mt-1"></div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" id="saveJsonBtn">Salvar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal de Confirmação -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                    Confirmação
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p id="confirmationMessage"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="confirmationButton">Confirmar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal de Erro -->
-<div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+<!-- Modal de Confirmação de Deleção -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title">
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    Erro
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Confirmar Exclusão
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p id="errorMessage"></p>
+                <p>Tem certeza que deseja excluir este item? Esta ação não pode ser desfeita.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a href="#" id="btnConfirmarDelete" class="btn btn-danger">
+                    <i class="fas fa-trash me-2"></i>Excluir
+                </a>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-/* Estilos gerais */
-.container {
-    background: linear-gradient(to bottom, #ffffff, #f8f9fa);
-    border-radius: 12px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.05);
-}
-
-/* Header */
-.header-card {
-    text-align: center;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    background: linear-gradient(45deg, #005288, #0077cc);
-    border-radius: 12px;
-    color: white;
-    box-shadow: 0 4px 15px rgba(0,82,136,0.2);
-}
-
-.header-card h1 {
-    font-weight: 700;
-    letter-spacing: -1px;
-    margin-bottom: 1rem;
-}
-
-/* Cards personalizados */
-.custom-card {
-    background: white;
-    border-radius: 12px;
-    border: none;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.custom-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-}
-
-.custom-card .card-header {
-    background: linear-gradient(45deg, #005288, #0077cc);
-    color: white;
-    border-radius: 12px 12px 0 0;
-    padding: 1.5rem;
-    border: none;
-}
-
-.custom-card .card-header h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-/* Lista personalizada */
-.custom-list .list-group-item {
-    border: none;
-    background: #f8f9fa;
-    margin-bottom: 0.5rem;
-    border-radius: 8px !important;
-    transition: all 0.3s ease;
-}
-
-.custom-list .list-group-item:hover {
-    background: #e9ecef;
-    transform: translateX(5px);
-}
-
-/* Editor de código */
-.code-editor {
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-}
-
-/* JSON Display */
-.json-display {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    padding: 1rem;
-    max-height: 200px;
-    overflow-y: auto;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    font-size: 0.9rem;
-}
-
-/* Tabela personalizada */
-.custom-table {
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.custom-table thead {
-    background: linear-gradient(45deg, #005288, #0077cc);
-    color: white;
-}
-
-.custom-table th {
-    border: none;
-    padding: 1rem;
-}
-
-/* Estado vazio */
-.empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: #6c757d;
-}
-
-.empty-state i {
-    color: #005288;
-    opacity: 0.5;
-}
-
-/* Botões */
-.btn-primary {
-    background: linear-gradient(45deg, #005288, #0077cc);
-    border: none;
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,82,136,0.2);
-}
-
-.btn-outline-primary {
-    color: #005288;
-    border-color: #005288;
-    border-radius: 8px;
-}
-
-.btn-outline-primary:hover {
-    background: linear-gradient(45deg, #005288, #0077cc);
-    border-color: transparent;
-}
-
-/* Badges */
-.badge {
-    padding: 0.6em 1em;
-    border-radius: 20px;
-    font-weight: 500;
-}
-
-/* Animações */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.custom-card {
-    animation: fadeIn 0.6s ease backwards;
-}
-
-.col-md-6:nth-child(2) .custom-card {
-    animation-delay: 0.2s;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .header-card {
-        padding: 1.5rem;
-    }
-    
-    .custom-card .card-header {
-        padding: 1rem;
-    }
-    
-    .custom-card .card-header h2 {
-        font-size: 1.2rem;
-    }
-}
-
-/* Novos estilos para melhorar a intuitividade */
-.steps-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-}
-
-.step-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    color: white;
-}
-
-.step-number {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 1.2rem;
-}
-
-.step-content {
-    text-align: left;
-}
-
-.step-content h5 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-}
-
-.step-content p {
-    margin: 0;
-    font-size: 0.85rem;
-    opacity: 0.8;
-}
-
-.step-arrow {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 1.2rem;
-}
-
-/* Caixas de instruções */
-.instructions-box {
-    display: flex;
-    gap: 1rem;
-    background: rgba(0, 82, 136, 0.05);
-    border-left: 4px solid #005288;
-    padding: 1rem;
-    border-radius: 0 8px 8px 0;
-}
-
-.instructions-icon {
-    font-size: 1.5rem;
-    color: #005288;
-}
-
-.instructions-text h6 {
-    margin: 0 0 0.5rem 0;
-    font-weight: 600;
-    color: #005288;
-}
-
-.instructions-text p {
-    margin: 0;
-    font-size: 0.9rem;
-}
-
-/* Seções de dados */
-.data-section {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.8rem 1rem;
-    background: rgba(0, 82, 136, 0.05);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.section-header h5 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #005288;
-}
-
-/* Melhorias no modal de ajuda JSON */
-.help-section {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.help-section:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-
-.json-example-card {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.json-example-card .card-header {
-    background: #005288;
-    color: white;
-    padding: 0.5rem 1rem;
-    font-weight: 500;
-    font-size: 0.9rem;
-}
-
-.json-example {
-    margin: 0;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 0;
-    border: none;
-}
-
-.json-explanation {
-    padding: 0.5rem 0 0 1rem;
-}
-
-.json-explanation ul {
-    padding-left: 1.2rem;
-}
-
-.json-explanation li {
-    margin-bottom: 0.5rem;
-}
-
-.json-types-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.json-type-card {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 1rem;
-    background: #f8f9fa;
-}
-
-.type-name {
-    font-weight: 600;
-    color: #005288;
-    margin-bottom: 0.5rem;
-}
-
-.type-example {
-    margin-bottom: 0.5rem;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-}
-
-.type-desc {
-    font-size: 0.85rem;
-    color: #6c757d;
-}
-
-.steps {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.step {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.step .step-number {
-    width: 30px;
-    height: 30px;
-    background: #005288;
-    color: white;
-    font-size: 1rem;
-}
-
-.step .step-desc {
-    font-size: 0.95rem;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .steps-container {
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-    
-    .step-arrow {
-        transform: rotate(90deg);
-    }
-    
-    .json-types-grid {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Formata o JSON no textarea quando colado
-    document.getElementById('json_data').addEventListener('paste', function(e) {
-        setTimeout(() => {
-            try {
-                const json = JSON.parse(this.value);
-                this.value = JSON.stringify(json, null, 4);
-                validateJson(this.value);
-            } catch (e) {
-                // Se não for JSON válido, mantém o texto original
-            }
-        }, 0);
-    });
-
-    // Validação de JSON em tempo real
-    document.getElementById('json_data').addEventListener('input', function() {
-        validateJson(this.value);
-    });
-
-    // Validação de JSON de edição em tempo real
-    document.getElementById('editJsonValue').addEventListener('input', function() {
-        validateEditJson(this.value);
-    });
-
-    // Configurar modal de edição de item
-    const editItemModal = new bootstrap.Modal(document.getElementById('editItemModal'));
-    document.querySelectorAll('.edit-item').forEach(button => {
-        button.addEventListener('click', function() {
-            const item = this.getAttribute('data-item');
-            const index = this.getAttribute('data-index');
-            document.getElementById('editItemValue').value = item;
-            document.getElementById('editItemIndex').value = index;
-            editItemModal.show();
-        });
-    });
-
-    // Configurar modal de edição de JSON
-    const editJsonModal = new bootstrap.Modal(document.getElementById('editJsonModal'));
-    document.querySelectorAll('.edit-json').forEach(button => {
-        button.addEventListener('click', function() {
-            const json = JSON.parse(this.getAttribute('data-json'));
-            const index = this.getAttribute('data-index');
-            document.getElementById('editJsonValue').value = JSON.stringify(json, null, 4);
-            document.getElementById('editJsonIndex').value = index;
-            validateEditJson(document.getElementById('editJsonValue').value);
-            editJsonModal.show();
-        });
-    });
-
-    // Inicializar todos os tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    // Inicializa tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-tooltip="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     });
 
-    // Remover tooltips ao clicar em dispositivos móveis
-    if ('ontouchstart' in window) {
-        tooltipList.forEach(tooltip => {
-            tooltip._element.addEventListener('click', () => {
-                tooltip.hide();
-            });
+    // Função de busca
+    const searchInput = document.getElementById('searchInput');
+    const filterTipo = document.getElementById('filterTipo');
+    const tableRows = document.querySelectorAll('tbody tr');
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedTipo = filterTipo.value.toLowerCase();
+
+        tableRows.forEach(row => {
+            const title = row.cells[0].textContent.toLowerCase();
+            const tipo = row.cells[1].textContent.toLowerCase();
+            
+            const matchesSearch = title.includes(searchTerm);
+            const matchesTipo = !selectedTipo || tipo.includes(selectedTipo);
+
+            row.style.display = matchesSearch && matchesTipo ? '' : 'none';
         });
     }
+
+    searchInput.addEventListener('input', filterTable);
+    filterTipo.addEventListener('change', filterTable);
 });
 
-// Templates para facilitar a entrada de dados
-const templates = {
-    pessoa: {
-        nome: "João Silva",
-        idade: 30,
-        email: "joao@email.com",
-        telefone: "(11) 99999-9999"
-    },
-    produto: {
-        nome: "Produto Exemplo",
-        preco: 99.99,
-        categoria: "Eletrônicos",
-        estoque: 50
-    },
-    evento: {
-        titulo: "Evento Exemplo",
-        data: "2024-03-20",
-        local: "São Paulo",
-        participantes: 100
-    },
-    astronauta: {
-        nome: "Robert Behnken",
-        agencia: "NASA",
-        imagem: "https://i.imgur.com/0smMgMH.png",
-        wikipedia: "https://en.wikipedia.org/wiki/Robert_L._Behnken",
-        lancamentos: [
-            "5eb87d46ffd86e000604b388"
-        ],
-        status: "ativo",
-        id: "5ebf1a6e23a9a60006e03a7a"
-    }
-};
-
-function setTemplate(type) {
-    const textarea = document.getElementById('json_data');
-    textarea.value = JSON.stringify(templates[type], null, 4);
-    validateJson(textarea.value);
-}
-
-function formatJson() {
-    const textarea = document.getElementById('json_data');
-    try {
-        const json = JSON.parse(textarea.value);
-        textarea.value = JSON.stringify(json, null, 4);
-        validateJson(textarea.value);
-    } catch (e) {
-        document.getElementById('jsonValidationMessage').innerHTML = 
-            '<div class="alert alert-danger py-2 px-3 mb-0"><i class="fas fa-exclamation-triangle me-2"></i>JSON inválido: ' + e.message + '</div>';
-    }
-}
-
-function formatEditJson() {
-    const textarea = document.getElementById('editJsonValue');
-    try {
-        const json = JSON.parse(textarea.value);
-        textarea.value = JSON.stringify(json, null, 4);
-        validateEditJson(textarea.value);
-    } catch (e) {
-        document.getElementById('editJsonValidationMessage').innerHTML = 
-            '<div class="alert alert-danger py-2 px-3 mb-0"><i class="fas fa-exclamation-triangle me-2"></i>JSON inválido: ' + e.message + '</div>';
-    }
-}
-
-function validateJson(jsonString) {
-    const messageElement = document.getElementById('jsonValidationMessage');
-    const submitButton = document.getElementById('submitJsonBtn');
-    
-    if (!jsonString.trim()) {
-        messageElement.innerHTML = '';
-        submitButton.disabled = true;
-        return;
-    }
-    
-    try {
-        JSON.parse(jsonString);
-        messageElement.innerHTML = 
-            '<div class="alert alert-success py-2 px-3 mb-0"><i class="fas fa-check-circle me-2"></i>JSON válido! Pronto para adicionar.</div>';
-        submitButton.disabled = false;
-    } catch (e) {
-        messageElement.innerHTML = 
-            '<div class="alert alert-danger py-2 px-3 mb-0"><i class="fas fa-exclamation-triangle me-2"></i>JSON inválido: ' + e.message + '</div>';
-        submitButton.disabled = true;
-    }
-}
-
-function validateEditJson(jsonString) {
-    const messageElement = document.getElementById('editJsonValidationMessage');
-    const submitButton = document.getElementById('saveJsonBtn');
-    
-    if (!jsonString.trim()) {
-        messageElement.innerHTML = '';
-        submitButton.disabled = true;
-        return;
-    }
-    
-    try {
-        JSON.parse(jsonString);
-        messageElement.innerHTML = 
-            '<div class="alert alert-success py-2 px-3 mb-0"><i class="fas fa-check-circle me-2"></i>JSON válido! Pronto para adicionar.</div>';
-        submitButton.disabled = false;
-    } catch (e) {
-        messageElement.innerHTML = 
-            '<div class="alert alert-danger py-2 px-3 mb-0"><i class="fas fa-exclamation-triangle me-2"></i>JSON inválido: ' + e.message + '</div>';
-        submitButton.disabled = true;
-    }
-}
-
-// Função para mostrar modal de confirmação
-function showConfirmation(message, callback) {
-    const modal = new bootstrap.Modal(document.getElementById('confirmationModal'));
-    document.getElementById('confirmationMessage').textContent = message;
-    
-    const confirmButton = document.getElementById('confirmationButton');
-    const handleConfirm = () => {
-        modal.hide();
-        callback();
-        confirmButton.removeEventListener('click', handleConfirm);
-    };
-    
-    confirmButton.addEventListener('click', handleConfirm);
+function confirmarDelecao(id) {
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    document.getElementById('btnConfirmarDelete').href = `/custom-data/deletar/${id}`;
     modal.show();
 }
-
-// Função para mostrar modal de erro
-function showError(message) {
-    const modal = new bootstrap.Modal(document.getElementById('errorModal'));
-    document.getElementById('errorMessage').textContent = message;
-    modal.show();
-}
-
-// Atualizar os event listeners de confirmação
-document.querySelectorAll('[data-confirm]').forEach(element => {
-    element.addEventListener('click', function(e) {
-        e.preventDefault();
-        const message = this.getAttribute('data-confirm');
-        const href = this.getAttribute('href');
-        
-        showConfirmation(message, () => {
-            if (href) {
-                window.location.href = href;
-            } else if (this.form) {
-                this.form.submit();
-            }
-        });
-    });
-});
-
-// Atualizar o botão de limpar lista
-document.querySelectorAll('[data-type="clear"]').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        const type = this.getAttribute('data-clear-type');
-        const form = this.closest('form');
-        
-        showConfirmation(`Tem certeza que deseja limpar ${type === 'list' ? 'toda a lista' : 'todo o dicionário'}?`, () => {
-            form.submit();
-        });
-    });
-});
-
-// Atualizar o botão de remover item
-document.querySelectorAll('[data-type="remove"]').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        const href = this.getAttribute('href');
-        
-        showConfirmation('Tem certeza que deseja remover este item?', () => {
-            window.location.href = href;
-        });
-    });
-});
-
-// Atualizar validação de JSON
-function validateJson(jsonString) {
-    const messageElement = document.getElementById('jsonValidationMessage');
-    const submitButton = document.getElementById('submitJsonBtn');
-    
-    if (!jsonString.trim()) {
-        messageElement.innerHTML = '';
-        submitButton.disabled = true;
-        return;
-    }
-    
-    try {
-        JSON.parse(jsonString);
-        messageElement.innerHTML = 
-            '<div class="alert alert-success py-2 px-3 mb-0"><i class="fas fa-check-circle me-2"></i>JSON válido! Pronto para adicionar.</div>';
-        submitButton.disabled = false;
-    } catch (e) {
-        messageElement.innerHTML = 
-            '<div class="alert alert-danger py-2 px-3 mb-0"><i class="fas fa-exclamation-triangle me-2"></i>JSON inválido: ' + e.message + '</div>';
-        submitButton.disabled = true;
-    }
-}
-
-// Atualizar validação de formulário JSON
-document.getElementById('jsonForm').addEventListener('submit', function(e) {
-    try {
-        JSON.parse(document.getElementById('json_data').value);
-    } catch (error) {
-        e.preventDefault();
-        showError('Por favor, corrija o JSON antes de enviar. O formato está inválido.');
-    }
-});
-
-// Atualizar validação de formulário de edição JSON
-document.getElementById('editJsonForm').addEventListener('submit', function(e) {
-    try {
-        JSON.parse(document.getElementById('editJsonValue').value);
-    } catch (error) {
-        e.preventDefault();
-        showError('Por favor, corrija o JSON antes de enviar. O formato está inválido.');
-    }
-});
-
-// Atualizar os botões de limpar
-document.querySelectorAll('.btn-danger[data-bs-toggle="tooltip"]').forEach(button => {
-    button.removeAttribute('onclick');
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        const form = this.closest('form');
-        const type = form.action.includes('list') ? 'lista' : 'dicionário';
-        
-        showConfirmation(`Tem certeza que deseja limpar ${type === 'lista' ? 'toda a lista' : 'todo o dicionário'}?`, () => {
-            form.submit();
-        });
-    });
-});
-
-// Atualizar os links de remoção
-document.querySelectorAll('a[href*="remove_item"]').forEach(link => {
-    link.removeAttribute('onclick');
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const href = this.getAttribute('href');
-        
-        showConfirmation('Tem certeza que deseja remover este item?', () => {
-            window.location.href = href;
-        });
-    });
-});
 </script>
+
+<style>
+/* Atualização dos estilos existentes para melhor contraste */
+.header-card {
+    background: linear-gradient(45deg, #003366, #005288);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.steps-container {
+    background: linear-gradient(to right, rgba(0, 24, 48, 0.95), rgba(0, 36, 72, 0.95));
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.step-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.step-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(0, 82, 136, 0.1), rgba(0, 119, 204, 0.1));
+    border-radius: 16px;
+    z-index: 0;
+}
+
+.step-icon {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.icon-circle {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(45deg, #005288, #0077cc);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 4px 15px rgba(0, 82, 136, 0.3);
+}
+
+.icon-circle i {
+    font-size: 1.8rem;
+    color: #ffffff;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.icon-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: rgba(0, 119, 204, 0.2);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.step-content {
+    position: relative;
+    z-index: 1;
+}
+
+.step-content h5 {
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.step-content p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.step-arrow {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    animation: twinkle 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.4; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+    100% { opacity: 0.3; }
+}
+
+.step-item:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.step-item:hover .icon-circle {
+    transform: scale(1.1);
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+    .steps-container {
+        flex-direction: column;
+        padding: 1.5rem;
+    }
+
+    .step-item {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .step-arrow {
+        transform: rotate(90deg);
+        margin: 0.5rem 0;
+    }
+}
+
+.custom-table thead {
+    background: linear-gradient(45deg, #003366, #005288);
+}
+
+.badge {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.badge.bg-info {
+    background-color: #0dcaf0 !important;
+    color: #000;
+}
+
+.badge.bg-success {
+    background-color: #198754 !important;
+    color: #fff;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000;
+}
+
+/* Melhorias na tabela */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(0, 82, 136, 0.05);
+    transform: scale(1.01);
+}
+
+/* Paginação */
+.pagination {
+    margin-top: 1.5rem;
+    justify-content: center;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #005288;
+    border-color: #005288;
+}
+
+/* Melhorias nos botões de ação */
+.btn-group .btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-group .btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.btn-group .btn:hover::after {
+    width: 200%;
+    height: 200%;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: linear-gradient(45deg, #005288, #0077cc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.stat-icon i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.stat-content h6 {
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.stat-content h3 {
+    color: #005288;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Atualização da animação das estrelas */
+@keyframes moveStars {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-100%);
+    }
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+    100% { opacity: 0.3; }
+}
+
+.stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0));
+    background-repeat: repeat;
+    animation: moveStars 300s linear infinite, twinkle 3s ease-in-out infinite alternate;
+    opacity: 0.5;
+}
+</style>
 {% endblock %} 

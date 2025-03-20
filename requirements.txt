@@ -1,6 +1,7 @@
 # Framework Web
 Flask
 Werkzeug
+flask-sqlalchemy
 
 # Requisições HTTP
 requests
